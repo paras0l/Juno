@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@android:color/transparent">
+
+    <ImageButton
+        android:id="@+id/btnCapture"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/floating_window_button"
+        android:src="@android:drawable/ic_menu_camera"
+        android:contentDescription="Capture text"
+        android:scaleType="centerInside"
+        android:padding="12dp" />
+
+    <ImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/floating_window_button"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:contentDescription="Close"
+        android:scaleType="centerInside"
+        android:padding="8dp" />
+
+</LinearLayout>

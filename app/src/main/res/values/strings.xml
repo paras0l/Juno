@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Juno</string>
+    <string name="accessibility_service_description">Juno OCR Service enables text recognition from screen content for accessibility features.</string>
+</resources>

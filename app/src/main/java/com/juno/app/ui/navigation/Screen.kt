@@ -1,0 +1,26 @@
+package com.juno.app.ui.navigation
+
+sealed class Screen(val route: String) {
+    data object Home : Screen("home")
+    data object Flashcard : Screen("flashcard")
+    data object WordList : Screen("word_list")
+    data object AddWord : Screen("add_word")
+    data object EditWord : Screen("edit_word/{wordId}") {
+        fun createRoute(wordId: Long) = "edit_word/$wordId"
+    }
+    data object Review : Screen("review")
+    data object Story : Screen("story")
+    data object StoryDetail : Screen("story_detail/{storyId}") {
+        fun createRoute(storyId: Long) = "story_detail/$storyId"
+    }
+    data object Settings : Screen("settings")
+    data object Profile : Screen("profile")
+    data object Pronunciation : Screen("pronunciation")
+    data object TutorSelection : Screen("tutor_selection")
+    data object Chat : Screen("chat/{tutorId}") {
+        fun createRoute(tutorId: String) = "chat/$tutorId"
+    }
+    data object Camera : Screen("camera")
+    data object AnchorResult : Screen("anchor_result")
+    data object FocusMode : Screen("focus_mode")
+}
