@@ -26,6 +26,9 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE id = :id")
     suspend fun getWordById(id: Long): WordEntity?
 
+    @Query("SELECT * FROM words WHERE LOWER(word) = LOWER(:wordText) LIMIT 1")
+    suspend fun getWordByText(wordText: String): WordEntity?
+
     @Query("SELECT * FROM words WHERE id = :id")
     fun getWordByIdFlow(id: Long): Flow<WordEntity?>
 
@@ -41,11 +44,28 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE category = :category")
     fun getWordsByCategory(category: String): Flow<List<WordEntity>>
 
-    @Query("SELECT * FROM words WHERE word LIKE '%' || :query || '%' OR meaning LIKE '%' || :query || '%'")
+    @Query("SELECT * FROM words WHERE (word LIKE '%' || :query || '%' OR meaning LIKE '%' || :query || '%')")
     fun searchWords(query: String): Flow<List<WordEntity>>
+
+    @Query("SELECT * FROM words WHERE isLearned = 1 AND (word LIKE '%' || :query || '%' OR meaning LIKE '%' || :query || '%')")
+    fun searchLearnedWords(query: String): Flow<List<WordEntity>>
+
+    @Query("""
+        SELECT w.* FROM words w
+        INNER JOIN review_records r ON w.id = r.wordId
+        WHERE r.repetitions >= 3 AND (w.word LIKE '%' || :query || '%' OR w.meaning LIKE '%' || :query || '%')
+    """)
+    fun searchMasteredWords(query: String): Flow<List<WordEntity>>
 
     @Query("SELECT * FROM words WHERE isLearned = 1")
     fun getLearnedWords(): Flow<List<WordEntity>>
+
+    @Query("""
+        SELECT w.* FROM words w
+        INNER JOIN review_records r ON w.id = r.wordId
+        WHERE r.repetitions >= 3
+    """)
+    fun getMasteredWords(): Flow<List<WordEntity>>
 
     @Query("SELECT COUNT(*) FROM words WHERE isLearned = 1")
     fun getLearnedWordsCount(): Flow<Int>
@@ -55,6 +75,15 @@ interface WordDao {
 
     @Query("SELECT * FROM words WHERE difficulty <= :maxDifficulty ORDER BY RANDOM() LIMIT :limit")
     fun getWordsForLearning(maxDifficulty: Int, limit: Int): Flow<List<WordEntity>>
+
+    @Query("UPDATE words SET lastStudiedDate = :date WHERE id = :wordId")
+    suspend fun updateLastStudiedDate(wordId: Long, date: Long)
+
+    @Query("SELECT * FROM words WHERE lastStudiedDate IS NOT NULL ORDER BY lastStudiedDate DESC LIMIT :limit")
+    fun getRecentlyStudiedWords(limit: Int): Flow<List<WordEntity>>
+
+    @Query("SELECT word FROM words")
+    suspend fun getAllWordsList(): List<String>
 
     @Query("DELETE FROM words")
     suspend fun deleteAllWords()

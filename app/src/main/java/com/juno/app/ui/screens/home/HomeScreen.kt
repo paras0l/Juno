@@ -1,5 +1,6 @@
 package com.juno.app.ui.screens.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,6 +62,8 @@ fun HomeScreen(
     onNavigateToTutorSelection: () -> Unit,
     onNavigateToCamera: () -> Unit,
     onNavigateToFocusMode: () -> Unit,
+    onNavigateToLearnedWords: () -> Unit,
+    onNavigateToMasteredWords: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -120,7 +123,10 @@ fun HomeScreen(
                 StatsOverview(
                     totalWordsLearned = uiState.totalWordsLearned,
                     masteredWords = uiState.masteredWords,
-                    wordsReviewedToday = uiState.wordsReviewedToday
+                    wordsReviewedToday = uiState.wordsReviewedToday,
+                    onLearnedWordsClick = onNavigateToLearnedWords,
+                    onMasteredWordsClick = onNavigateToMasteredWords,
+                    onReviewedTodayClick = onNavigateToReview
                 )
             }
         }
@@ -471,7 +477,10 @@ private fun WordListQuickAccess(onNavigateToWordList: () -> Unit) {
 private fun StatsOverview(
     totalWordsLearned: Int,
     masteredWords: Int,
-    wordsReviewedToday: Int
+    wordsReviewedToday: Int,
+    onLearnedWordsClick: () -> Unit,
+    onMasteredWordsClick: () -> Unit,
+    onReviewedTodayClick: () -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth()
@@ -492,17 +501,20 @@ private fun StatsOverview(
                 StatItem(
                     icon = Icons.Default.CheckCircle,
                     value = totalWordsLearned.toString(),
-                    label = "已学单词"
+                    label = "已学单词",
+                    onClick = onLearnedWordsClick
                 )
                 StatItem(
                     icon = Icons.Default.School,
                     value = masteredWords.toString(),
-                    label = "已掌握"
+                    label = "已掌握",
+                    onClick = onMasteredWordsClick
                 )
                 StatItem(
                     icon = Icons.Default.Refresh,
                     value = wordsReviewedToday.toString(),
-                    label = "今日复习"
+                    label = "今日复习",
+                    onClick = onReviewedTodayClick
                 )
             }
         }
@@ -513,10 +525,19 @@ private fun StatsOverview(
 private fun StatItem(
     icon: ImageVector,
     value: String,
-    label: String
+    label: String,
+    onClick: (() -> Unit)? = null
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = if (onClick != null) {
+            Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .clickable(onClick = onClick)
+                .padding(8.dp)
+        } else {
+            Modifier.padding(8.dp)
+        }
     ) {
         Icon(
             imageVector = icon,
@@ -532,7 +553,7 @@ private fun StatItem(
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

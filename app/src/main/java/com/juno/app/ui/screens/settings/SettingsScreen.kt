@@ -64,6 +64,7 @@ fun SettingsScreen(
     var showDifficultyDialog by remember { mutableStateOf(false) }
     var showStoryStyleDialog by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
+    var showAboutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -135,7 +136,7 @@ fun SettingsScreen(
                     icon = Icons.Default.DarkMode,
                     title = "深色模式",
                     subtitle = "使用深色主题",
-                    checked = uiState.darkMode,
+                    checked = uiState.isDarkMode,
                     onCheckedChange = { viewModel.setDarkMode(it) }
                 )
             }
@@ -154,8 +155,8 @@ fun SettingsScreen(
                 SettingsItem(
                     icon = Icons.Default.Info,
                     title = "版本",
-                    subtitle = "1.0.0",
-                    onClick = { }
+                    subtitle = "1.0.1",
+                    onClick = { showAboutDialog = true }
                 )
             }
 
@@ -203,6 +204,27 @@ fun SettingsScreen(
             onSelect = { theme ->
                 viewModel.setThemeMode(theme)
                 showThemeDialog = false
+            }
+        )
+    }
+
+    if (showAboutDialog) {
+        AlertDialog(
+            onDismissRequest = { showAboutDialog = false },
+            title = { Text("关于 Juno") },
+            text = {
+                Column {
+                    Text("Juno AI 英语学习助手")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("版本: 1.0.1")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("一款结合AI技术的英语学习应用，包含闪卡、复习、视觉锚定等功能。")
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showAboutDialog = false }) {
+                    Text("确定")
+                }
             }
         )
     }

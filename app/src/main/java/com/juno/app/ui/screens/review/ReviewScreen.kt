@@ -515,7 +515,7 @@ private fun EmptyReviewScreen(onNavigateBack: () -> Unit) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "没有待复习的单词",
+            text = "暂无待复习的单词",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Medium
         )
@@ -523,9 +523,10 @@ private fun EmptyReviewScreen(onNavigateBack: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "太棒了! 所有复习任务已完成",
+            text = "你的学习进度很好！当前没有到期需要复习的单词\n新学的单词会根据记忆曲线自动安排复习",
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(24.dp))

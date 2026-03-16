@@ -144,6 +144,17 @@ class AddWordViewModel @Inject constructor(
                 if (currentState.isEditMode) {
                     wordRepository.updateWord(wordEntity)
                 } else {
+                    // Check for duplicates
+                    val existingWord = wordRepository.getWordByText(wordEntity.word)
+                    if (existingWord != null) {
+                        _uiState.update {
+                            it.copy(
+                                isSaving = false,
+                                wordError = "该单词已存在于单词本中"
+                            )
+                        }
+                        return@launch
+                    }
                     wordRepository.insertWord(wordEntity)
                 }
 

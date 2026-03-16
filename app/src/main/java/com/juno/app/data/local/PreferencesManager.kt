@@ -38,6 +38,11 @@ class PreferencesManager @Inject constructor(
         private val USER_ID = stringPreferencesKey("user_id")
         private val THEME_MODE = stringPreferencesKey("theme_mode")
         private val FOCUS_MODE_DURATION = intPreferencesKey("focus_mode_duration")
+        private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+    }
+
+    val onboardingCompleted: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[ONBOARDING_COMPLETED] ?: false
     }
 
     val darkMode: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -187,6 +192,12 @@ class PreferencesManager @Inject constructor(
     suspend fun setFocusModeDuration(duration: Int) {
         dataStore.edit { preferences ->
             preferences[FOCUS_MODE_DURATION] = duration
+        }
+    }
+
+    suspend fun setOnboardingCompleted(completed: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[ONBOARDING_COMPLETED] = completed
         }
     }
 

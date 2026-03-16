@@ -70,18 +70,19 @@ private val MorandiColorScheme = lightColorScheme(
     onPrimary = MorandiOnPrimary,
     primaryContainer = MorandiSecondary,
     onPrimaryContainer = MorandiOnSecondary,
-    secondary = MorandiTertiary,
+    secondary = MorandiSecondary,
     onSecondary = MorandiOnSecondary,
     secondaryContainer = MorandiSurface,
     onSecondaryContainer = MorandiOnSurface,
-    tertiary = MorandiSecondary,
-    onTertiary = MorandiOnSecondary,
+    tertiary = MorandiPrimary,
+    onTertiary = MorandiOnPrimary,
     background = MorandiBackground,
     onBackground = MorandiOnBackground,
     surface = MorandiSurface,
     onSurface = MorandiOnSurface,
-    surfaceVariant = MorandiSurface,
-    onSurfaceVariant = MorandiOnSurface
+    surfaceVariant = MorandiSurfaceVariant,
+    onSurfaceVariant = MorandiOnSurface,
+    outline = MorandiOutline
 )
 
 private val MinimalistColorScheme = lightColorScheme(
@@ -124,7 +125,7 @@ fun JunoTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDarkTheme
         }
     }

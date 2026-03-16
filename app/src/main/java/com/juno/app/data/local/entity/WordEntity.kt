@@ -16,6 +16,7 @@ data class WordEntity(
     val imageUrl: String? = null,
     val difficulty: Int = 1, // 1-5 scale
     val isLearned: Boolean = false,
+    val lastStudiedDate: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val category: String? = null,
     val tags: String? = null // Comma-separated tags

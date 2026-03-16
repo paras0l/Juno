@@ -1,11 +1,14 @@
 package com.juno.app.ui.screens.pronunciation
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.juno.app.data.local.VoiceRecordingManager
@@ -104,18 +107,44 @@ class PronunciationViewModel @Inject constructor(
     fun startRecording() {
         if (_uiState.value.isRecording) return
 
-        voiceRecordingManager.startRecording()
-        _uiState.value = _uiState.value.copy(
-            isRecording = true,
-            recognizedText = "",
-            score = null
-        )
+        // Check record audio permission
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            _uiState.value = _uiState.value.copy(
+                error = "需要麦克风权限才能录音，请在设置中授予录音权限"
+            )
+            return
+        }
 
-        startSpeechRecognition()
+        try {
+            val filePath = voiceRecordingManager.startRecording()
+            if (filePath == null) {
+                _uiState.value = _uiState.value.copy(
+                    error = "录音初始化失败，请检查麦克风是否被其他应用占用"
+                )
+                return
+            }
+            _uiState.value = _uiState.value.copy(
+                isRecording = true,
+                recognizedText = "",
+                score = null
+            )
+            startSpeechRecognition()
+        } catch (e: Exception) {
+            _uiState.value = _uiState.value.copy(
+                error = "录音启动失败: ${e.message ?: "未知错误"}"
+            )
+        }
     }
 
     fun stopRecording() {
-        voiceRecordingManager.stopRecording()
+        try {
+            voiceRecordingManager.stopRecording()
+        } catch (e: Exception) {
+            // Swallow errors on stop to avoid crash
+            e.printStackTrace()
+        }
         _uiState.value = _uiState.value.copy(isRecording = false)
         stopSpeechRecognition()
     }

@@ -7,13 +7,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.juno.app.data.local.PreferencesManager
 import com.juno.app.ui.screens.addword.AddWordScreen
 import com.juno.app.ui.screens.anchor.AnchorResultScreen
 import com.juno.app.ui.screens.camera.CameraScreen
 import com.juno.app.ui.screens.chat.ChatScreen
 import com.juno.app.ui.screens.flashcard.FlashcardScreen
 import com.juno.app.ui.screens.focus.FocusModeScreen
-import com.juno.app.ui.screens.home.HomeScreen
+import com.juno.app.ui.screens.main.MainScreen
+import com.juno.app.ui.screens.permission.PermissionGuideScreen
 import com.juno.app.ui.screens.profile.ProfileScreen
 import com.juno.app.ui.screens.pronunciation.PronunciationScreen
 import com.juno.app.ui.screens.review.ReviewScreen
@@ -26,34 +28,62 @@ import com.juno.app.ui.screens.wordlist.WordListScreen
 @Composable
 fun JunoNavHost(
     navController: NavHostController,
+    preferencesManager: PreferencesManager,
+    onboardingCompleted: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val startDestination = if (onboardingCompleted) {
+        Screen.Home.route
+    } else {
+        Screen.PermissionGuide.route
+    }
+
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = startDestination,
         modifier = modifier
     ) {
+        composable(Screen.PermissionGuide.route) {
+            PermissionGuideScreen(
+                preferencesManager = preferencesManager,
+                onComplete = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.PermissionGuide.route) { inclusive = true }
+                    }
+                }
+            )
+        }
         composable(Screen.Home.route) {
-            HomeScreen(
-                onNavigateToFlashcard = { navController.navigate(Screen.Flashcard.route) },
+            MainScreen(
                 onNavigateToReview = { navController.navigate(Screen.Review.route) },
                 onNavigateToStory = { navController.navigate(Screen.Story.route) },
-                onNavigateToWordList = { navController.navigate(Screen.WordList.route) },
+                onNavigateToWordList = { navController.navigate(Screen.WordList.createRoute()) },
                 onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
                 onNavigateToTutorSelection = { navController.navigate(Screen.TutorSelection.route) },
                 onNavigateToCamera = { navController.navigate(Screen.Camera.route) },
-                onNavigateToFocusMode = { navController.navigate(Screen.FocusMode.route) }
+                onNavigateToFocusMode = { navController.navigate(Screen.FocusMode.route) },
+                onNavigateToLearnedWords = { navController.navigate(Screen.WordList.createRoute("learned")) },
+                onNavigateToMasteredWords = { navController.navigate(Screen.WordList.createRoute("mastered")) },
+                onNavigateToPronunciation = { navController.navigate(Screen.Pronunciation.route) }
             )
         }
 
         composable(Screen.Flashcard.route) {
             FlashcardScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPronunciation = { navController.navigate(Screen.Pronunciation.route) }
+                onNavigateToPronunciation = { navController.navigate(Screen.Pronunciation.route) },
+                onNavigateToWordList = { navController.navigate(Screen.WordList.createRoute()) }
             )
         }
 
-        composable(Screen.WordList.route) {
+        composable(
+            route = Screen.WordList.route,
+            arguments = listOf(navArgument("filter") {
+                type = NavType.StringType
+                defaultValue = ""
+                nullable = true
+            })
+        ) {
             WordListScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToAddWord = { navController.navigate(Screen.AddWord.route) },

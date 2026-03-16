@@ -1,6 +1,7 @@
 package com.juno.app.ui.screens.wordlist
 
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.juno.app.data.local.entity.WordEntity
@@ -38,8 +39,17 @@ data class ImportResult(
 @HiltViewModel
 class WordListViewModel @Inject constructor(
     private val wordRepository: WordRepository,
-    private val excelImportService: ExcelImportService
+    private val excelImportService: ExcelImportService,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    val filter: String = savedStateHandle.get<String>("filter")?.takeIf { it.isNotBlank() } ?: ""
+
+    val screenTitle: String = when (filter) {
+        "learned" -> "已学单词"
+        "mastered" -> "已掌握单词"
+        else -> "单词本"
+    }
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
@@ -62,10 +72,13 @@ class WordListViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val words: StateFlow<List<WordEntity>> = _searchQuery
         .flatMapLatest { query ->
-            if (query.isBlank()) {
-                wordRepository.getAllWords()
-            } else {
-                wordRepository.searchWords(query)
+            when {
+                query.isNotBlank() && filter == "learned" -> wordRepository.searchLearnedWords(query)
+                query.isNotBlank() && filter == "mastered" -> wordRepository.searchMasteredWords(query)
+                query.isNotBlank() -> wordRepository.searchWords(query)
+                filter == "learned" -> wordRepository.getLearnedWords()
+                filter == "mastered" -> wordRepository.getMasteredWords()
+                else -> wordRepository.getAllWords()
             }
         }
         .map { words ->
@@ -121,11 +134,25 @@ class WordListViewModel @Inject constructor(
                 val result = excelImportService.importWords(uri)
                 
                 if (result.success && result.words.isNotEmpty()) {
-                    wordRepository.insertWords(result.words)
+                    // Filter out already existing words
+                    val existingWords = wordRepository.getAllWordsList().map { it.lowercase() }.toSet()
+                    val newWords = result.words.filter { it.word.lowercase() !in existingWords }
+                    
+                    if (newWords.isNotEmpty()) {
+                        wordRepository.insertWords(newWords)
+                    }
+                    
+                    val skippedCount = result.words.size - newWords.size
+                    val message = if (skippedCount > 0) {
+                        "成功导入 ${newWords.size} 个单词 (跳过 ${skippedCount} 个已存在单词)"
+                    } else {
+                        "成功导入 ${newWords.size} 个单词"
+                    }
+                    
                     _importResult.value = ImportResult(
                         success = true,
-                        importedCount = result.importedCount,
-                        message = "成功导入 ${result.importedCount} 个单词"
+                        importedCount = newWords.size,
+                        message = message
                     )
                 } else {
                     _importResult.value = ImportResult(
@@ -146,5 +173,81 @@ class WordListViewModel @Inject constructor(
 
     fun clearImportResult() {
         _importResult.value = null
+    }
+
+    fun exportWords(context: android.content.Context, words: List<WordEntity>) {
+        viewModelScope.launch {
+            try {
+                val workbook = org.apache.poi.xssf.usermodel.XSSFWorkbook()
+                val sheet = workbook.createSheet(screenTitle)
+
+                // Header style
+                val headerStyle = workbook.createCellStyle().apply {
+                    val font = workbook.createFont().apply {
+                        bold = true
+                        fontHeightInPoints = 12
+                    }
+                    setFont(font)
+                }
+
+                // Header row
+                val headerRow = sheet.createRow(0)
+                val headers = listOf("单词", "音标", "释义", "例句", "难度", "状态")
+                headers.forEachIndexed { index, title ->
+                    headerRow.createCell(index).apply {
+                        setCellValue(title)
+                        cellStyle = headerStyle
+                    }
+                }
+
+                // Data rows
+                words.forEachIndexed { index, word ->
+                    val row = sheet.createRow(index + 1)
+                    row.createCell(0).setCellValue(word.word)
+                    row.createCell(1).setCellValue(word.phonetic ?: "")
+                    row.createCell(2).setCellValue(word.meaning)
+                    row.createCell(3).setCellValue(word.example ?: "")
+                    row.createCell(4).setCellValue(word.difficulty.toDouble())
+                    row.createCell(5).setCellValue(if (word.isLearned) "已学" else "未学")
+                }
+
+                // Auto-size columns
+                headers.indices.forEach { sheet.setColumnWidth(it, 5000) }
+                sheet.setColumnWidth(0, 4000)  // 单词
+                sheet.setColumnWidth(2, 8000)  // 释义
+                sheet.setColumnWidth(3, 10000) // 例句
+
+                // Write to cache file
+                val fileName = "${screenTitle}_${java.text.SimpleDateFormat("yyyyMMdd_HHmm", java.util.Locale.getDefault()).format(java.util.Date())}.xlsx"
+                val file = java.io.File(context.cacheDir, fileName)
+                java.io.FileOutputStream(file).use { fos ->
+                    workbook.write(fos)
+                }
+                workbook.close()
+
+                // Share via FileProvider
+                val uri = androidx.core.content.FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    file
+                )
+                val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                    type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    putExtra(android.content.Intent.EXTRA_STREAM, uri)
+                    addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                context.startActivity(android.content.Intent.createChooser(intent, "导出${screenTitle}"))
+
+                _importResult.value = ImportResult(
+                    success = true,
+                    message = "已导出 ${words.size} 个单词"
+                )
+            } catch (e: Exception) {
+                _importResult.value = ImportResult(
+                    success = false,
+                    message = "导出失败: ${e.message}"
+                )
+            }
+        }
     }
 }

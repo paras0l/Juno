@@ -3,6 +3,7 @@ package com.juno.app.data.remote
 import android.content.Context
 import android.net.Uri
 import com.juno.app.data.local.entity.WordEntity
+import com.juno.app.domain.repository.WordRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,13 +15,15 @@ import javax.inject.Singleton
 
 @Singleton
 class ExcelImportService @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val wordRepository: WordRepository
 ) {
 
     data class ImportResult(
         val success: Boolean,
         val importedCount: Int = 0,
         val skippedCount: Int = 0,
+        val duplicateCount: Int = 0,
         val errorMessage: String? = null,
         val words: List<WordEntity> = emptyList()
     )
@@ -43,10 +46,17 @@ class ExcelImportService @Inject constructor(
                 )
             }
 
+            // Get existing words to filter duplicates
+            val existingWords = wordRepository.getAllWordsList().toSet()
+            val newWords = words.filter { it.word.lowercase() !in existingWords }
+            val duplicateCount = words.size - newWords.size
+
             ImportResult(
                 success = true,
-                importedCount = words.size,
-                words = words
+                importedCount = newWords.size,
+                skippedCount = newWords.size,
+                duplicateCount = duplicateCount,
+                words = newWords
             )
         } catch (e: Exception) {
             ImportResult(

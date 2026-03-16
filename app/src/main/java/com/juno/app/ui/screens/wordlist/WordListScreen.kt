@@ -23,6 +23,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -49,6 +50,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -71,7 +73,10 @@ fun WordListScreen(
     val wordToDelete by viewModel.wordToDelete.collectAsState()
     val isImporting by viewModel.isImporting.collectAsState()
     val importResult by viewModel.importResult.collectAsState()
-    
+
+    val isFilteredMode = viewModel.filter.isNotEmpty()
+    val context = LocalContext.current
+
     val snackbarHostState = remember { SnackbarHostState() }
 
     val excelPickerLauncher = rememberLauncherForActivityResult(
@@ -90,7 +95,18 @@ fun WordListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("单词本") },
+                title = {
+                    Column {
+                        Text(viewModel.screenTitle)
+                        if (isFilteredMode) {
+                            Text(
+                                text = "共 ${words.size} 个单词",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -100,41 +116,59 @@ fun WordListScreen(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            excelPickerLauncher.launch(
-                                arrayOf(
-                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                    "application/vnd.ms-excel"
-                                )
-                            )
-                        },
-                        enabled = !isImporting
-                    ) {
-                        if (isImporting) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                strokeWidth = 2.dp
-                            )
-                        } else {
+                    if (isFilteredMode) {
+                        // Export button for filtered mode
+                        IconButton(
+                            onClick = {
+                                viewModel.exportWords(context, words)
+                            },
+                            enabled = words.isNotEmpty()
+                        ) {
                             Icon(
-                                imageVector = Icons.Default.FileUpload,
-                                contentDescription = "导入Excel"
+                                imageVector = Icons.Default.FileDownload,
+                                contentDescription = "导出"
                             )
+                        }
+                    } else {
+                        // Import button for normal mode
+                        IconButton(
+                            onClick = {
+                                excelPickerLauncher.launch(
+                                    arrayOf(
+                                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                        "application/vnd.ms-excel"
+                                    )
+                                )
+                            },
+                            enabled = !isImporting
+                        ) {
+                            if (isImporting) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    strokeWidth = 2.dp
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.FileUpload,
+                                    contentDescription = "导入Excel"
+                                )
+                            }
                         }
                     }
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onNavigateToAddWord,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Word"
-                )
+            if (!isFilteredMode) {
+                FloatingActionButton(
+                    onClick = onNavigateToAddWord,
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Word"
+                    )
+                }
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -150,7 +184,7 @@ fun WordListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                placeholder = { Text("搜索单词或释义...") },
+                placeholder = { Text(if (isFilteredMode) "在${viewModel.screenTitle}中搜索..." else "搜索单词或释义...") },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
@@ -171,7 +205,11 @@ fun WordListScreen(
                     }
                 }
                 words.isEmpty() && searchQuery.isEmpty() -> {
-                    EmptyState(onAddWord = onNavigateToAddWord)
+                    if (isFilteredMode) {
+                        FilteredEmptyState(filter = viewModel.filter)
+                    } else {
+                        EmptyState(onAddWord = onNavigateToAddWord)
+                    }
                 }
                 words.isEmpty() && searchQuery.isNotEmpty() -> {
                     EmptySearchState(query = searchQuery)
@@ -187,8 +225,8 @@ fun WordListScreen(
                         ) { word ->
                             WordListItem(
                                 word = word,
-                                onEdit = { onNavigateToEditWord(word.id) },
-                                onDelete = { viewModel.showDeleteConfirmation(word) }
+                                onEdit = if (!isFilteredMode) {{ onNavigateToEditWord(word.id) }} else null,
+                                onDelete = if (!isFilteredMode) {{ viewModel.showDeleteConfirmation(word) }} else null
                             )
                         }
                     }
@@ -225,8 +263,8 @@ fun WordListScreen(
 @Composable
 private fun WordListItem(
     word: WordEntity,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onEdit: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -260,7 +298,7 @@ private fun WordListItem(
                                 onClick = { },
                                 label = {
                                     Text(
-                                        text = "已掌握",
+                                        text = "已学",
                                         style = MaterialTheme.typography.labelSmall
                                     )
                                 }
@@ -277,20 +315,26 @@ private fun WordListItem(
                     }
                 }
 
-                Row {
-                    IconButton(onClick = onEdit) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    IconButton(onClick = onDelete) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete",
-                            tint = MaterialTheme.colorScheme.error
-                        )
+                if (onEdit != null || onDelete != null) {
+                    Row {
+                        if (onEdit != null) {
+                            IconButton(onClick = onEdit) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Edit",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                        if (onDelete != null) {
+                            IconButton(onClick = onDelete) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete",
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -367,6 +411,38 @@ private fun EmptySearchState(query: String) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "没有找到包含 \"$query\" 的单词",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun FilteredEmptyState(filter: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = when (filter) {
+                    "learned" -> "还没有已学单词"
+                    "mastered" -> "还没有已掌握单词"
+                    else -> "暂无数据"
+                },
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = when (filter) {
+                    "learned" -> "去背单词吧，学过的单词会出现在这里"
+                    "mastered" -> "持续复习，掌握的单词会出现在这里"
+                    else -> ""
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

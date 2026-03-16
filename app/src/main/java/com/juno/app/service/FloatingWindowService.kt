@@ -92,11 +92,13 @@ class FloatingWindowService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Juno OCR")
-            .setContentText("Floating window active")
+            .setContentTitle("Juno OCR 悬浮窗 已激活")
+            .setContentText("点击悬浮按钮截取屏幕文字，即刻查词并收藏")
             .setSmallIcon(android.R.drawable.ic_menu_camera)
             .setContentIntent(pendingIntent)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopIntent)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText("使用方法：\n1. 找到悬浮的圆形按钮，可拖动移动位置\n2. 点击拍照按钮截取屏幕上的文字\n3. 识别结果会自动显示"))
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "关闭", stopIntent)
             .build()
     }
 
@@ -187,7 +189,7 @@ class FloatingWindowService : Service() {
                 }
             }
         } else {
-            onTextRecognized?.invoke("Accessibility service not enabled. Please enable in settings.")
+            onTextRecognized?.invoke("无障碍服务未启用\n请前往系统设置 -> 无障碍 -> Juno OCR\n开启后即可截取屏幕文字")
         }
     }
 

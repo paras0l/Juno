@@ -63,7 +63,8 @@ class ReviewViewModel @Inject constructor(
                 if (dueRecords.isEmpty()) {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        isComplete = true
+                        reviews = emptyList(),
+                        isComplete = false  // Not complete, just nothing to review
                     )
                     return@launch
                 }

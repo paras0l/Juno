@@ -2,6 +2,8 @@ package com.juno.app.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.juno.app.data.local.AudioPlaybackManager
 import com.juno.app.data.local.JunoDatabase
 import com.juno.app.data.local.PreferencesManager
@@ -35,11 +37,17 @@ object DatabaseModule {
     fun provideJunoDatabase(
         @ApplicationContext context: Context
     ): JunoDatabase {
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE words ADD COLUMN lastStudiedDate INTEGER")
+            }
+        }
+
         return Room.databaseBuilder(
             context,
             JunoDatabase::class.java,
             JunoDatabase.DATABASE_NAME
-        ).build()
+        ).addMigrations(MIGRATION_1_2).build()
     }
 
     @Provides

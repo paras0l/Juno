@@ -25,7 +25,10 @@ data class SettingsUiState(
     val soundEffectsEnabled: Boolean = true,
     val showPhonetics: Boolean = true,
     val showTranslation: Boolean = true
-)
+) {
+    val isDarkMode: Boolean
+        get() = themeMode == "dark"
+}
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -95,7 +98,7 @@ class SettingsViewModel @Inject constructor(
 
     fun setDarkMode(enabled: Boolean) {
         viewModelScope.launch {
-            preferencesManager.setDarkMode(enabled)
+            preferencesManager.setThemeMode(if (enabled) "dark" else "light")
         }
     }
 

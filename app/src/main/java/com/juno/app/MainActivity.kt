@@ -32,6 +32,7 @@ class MainActivity : ComponentActivity() {
         handleIntent(intent)
         setContent {
             val themeMode by preferencesManager.themeMode.collectAsState(initial = "light")
+            val onboardingCompleted by preferencesManager.onboardingCompleted.collectAsState(initial = true)
             val theme = when (themeMode) {
                 "dark" -> AppTheme.DARK
                 "morandi" -> AppTheme.MORANDI
@@ -45,7 +46,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    JunoNavHost(navController = navController)
+                    JunoNavHost(
+                        navController = navController,
+                        preferencesManager = preferencesManager,
+                        onboardingCompleted = onboardingCompleted
+                    )
                 }
             }
         }

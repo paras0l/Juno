@@ -25,6 +25,9 @@ class UserRepositoryImpl @Inject constructor(
         val existing = userProgressDao.getUserProgressSync()
         if (existing == null) {
             userProgressDao.insertProgress(UserProgressEntity())
+        } else {
+            // Always check if daily stats need reset when app opens
+            checkAndResetDailyStats()
         }
     }
 
@@ -87,7 +90,13 @@ class UserRepositoryImpl @Inject constructor(
 
     private suspend fun checkAndResetDailyStats() {
         val progress = userProgressDao.getUserProgressSync() ?: return
-        val lastStudyDate = progress.lastStudyDate ?: return
+        val lastStudyDate = progress.lastStudyDate
+
+        // If never studied before, just set today's date and ensure counters are clean
+        if (lastStudyDate == null) {
+            userProgressDao.resetDailyStats()
+            return
+        }
 
         val lastStudyCalendar = Calendar.getInstance().apply { timeInMillis = lastStudyDate }
         val todayCalendar = Calendar.getInstance()

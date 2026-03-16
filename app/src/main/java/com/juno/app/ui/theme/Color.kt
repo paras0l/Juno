@@ -22,15 +22,16 @@ val SurfaceLight = Color(0xFFFFFFFF)
 val SurfaceDark = Color(0xFF1E1E1E)
 
 // Morandi Theme Colors (muted, earthy tones)
-val MorandiPrimary = Color(0xFF9CA8B7)      // Blue-grey
-val MorandiSecondary = Color(0xFFB4A396)    // Warm beige
-val MorandiTertiary = Color(0xFFA8B4B4)    // Sage green
-val MorandiBackground = Color(0xFFF0EDE8)  // Warm off-white
-val MorandiSurface = Color(0xFFFAF8F5)       // Cream white
+val MorandiPrimary = Color(0xFF8FA1B3)      // 雾霾蓝 (Haze Blue)
+val MorandiSecondary = Color(0xFFD3C8B4)    // 暖奶茶 (Warm Milk Tea)
+val MorandiBackground = Color(0xFFF7F7F7)   // 极简灰 (Minimalist Gray Background)
+val MorandiSurface = Color(0xFFFFFFFF)      // Pure White for Cards
 val MorandiOnPrimary = Color(0xFFFFFFFF)
-val MorandiOnSecondary = Color(0xFF2D2D2D)
-val MorandiOnBackground = Color(0xFF3D3D3D)
-val MorandiOnSurface = Color(0xFF4A4A4A)
+val MorandiOnSecondary = Color(0xFF333333)
+val MorandiOnBackground = Color(0xFF1E1E1E) // Dark text for high contrast
+val MorandiOnSurface = Color(0xFF2C2C2C)
+val MorandiOutline = Color(0xFFE0E0E0)
+val MorandiSurfaceVariant = Color(0xFFF0F0F0)
 
 // Minimalist Theme Colors (pure, clean)
 val MinimalistPrimary = Color(0xFF000000)   // Pure black

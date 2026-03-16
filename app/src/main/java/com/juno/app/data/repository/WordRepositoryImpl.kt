@@ -24,8 +24,20 @@ class WordRepositoryImpl @Inject constructor(
         return wordDao.getWordById(id)
     }
 
+    override suspend fun getWordByText(wordText: String): WordEntity? {
+        return wordDao.getWordByText(wordText)
+    }
+
     override fun searchWords(query: String): Flow<List<WordEntity>> {
         return wordDao.searchWords(query)
+    }
+
+    override fun searchLearnedWords(query: String): Flow<List<WordEntity>> {
+        return wordDao.searchLearnedWords(query)
+    }
+
+    override fun searchMasteredWords(query: String): Flow<List<WordEntity>> {
+        return wordDao.searchMasteredWords(query)
     }
 
     override fun getUnlearnedWords(limit: Int): Flow<List<WordEntity>> {
@@ -34,6 +46,10 @@ class WordRepositoryImpl @Inject constructor(
 
     override fun getLearnedWords(): Flow<List<WordEntity>> {
         return wordDao.getLearnedWords()
+    }
+
+    override fun getMasteredWords(): Flow<List<WordEntity>> {
+        return wordDao.getMasteredWords()
     }
 
     override fun getWordsByCategory(category: String): Flow<List<WordEntity>> {
@@ -68,7 +84,19 @@ class WordRepositoryImpl @Inject constructor(
         wordDao.updateLearnedStatus(wordId, isLearned)
     }
 
+    override suspend fun updateLastStudiedDate(wordId: Long, date: Long) {
+        wordDao.updateLastStudiedDate(wordId, date)
+    }
+
+    override fun getRecentlyStudiedWords(limit: Int): Flow<List<WordEntity>> {
+        return wordDao.getRecentlyStudiedWords(limit)
+    }
+
     override suspend fun deleteAllWords() {
         wordDao.deleteAllWords()
+    }
+
+    override suspend fun getAllWordsList(): List<String> {
+        return wordDao.getAllWordsList()
     }
 }

@@ -3,7 +3,11 @@ package com.juno.app.ui.navigation
 sealed class Screen(val route: String) {
     data object Home : Screen("home")
     data object Flashcard : Screen("flashcard")
-    data object WordList : Screen("word_list")
+    data object WordList : Screen("word_list?filter={filter}") {
+        fun createRoute(filter: String? = null): String {
+            return if (filter != null) "word_list?filter=$filter" else "word_list?filter="
+        }
+    }
     data object AddWord : Screen("add_word")
     data object EditWord : Screen("edit_word/{wordId}") {
         fun createRoute(wordId: Long) = "edit_word/$wordId"
@@ -23,4 +27,5 @@ sealed class Screen(val route: String) {
     data object Camera : Screen("camera")
     data object AnchorResult : Screen("anchor_result")
     data object FocusMode : Screen("focus_mode")
+    data object PermissionGuide : Screen("permission_guide")
 }

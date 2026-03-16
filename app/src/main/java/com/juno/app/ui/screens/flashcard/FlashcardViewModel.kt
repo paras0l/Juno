@@ -44,6 +44,8 @@ class FlashcardViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(FlashcardUiState())
     val uiState: StateFlow<FlashcardUiState> = _uiState.asStateFlow()
 
+    private var lastLoadedLimit: Int = -1
+
     init {
         loadWords()
     }
@@ -52,22 +54,33 @@ class FlashcardViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
+                val userProgress = userRepository.getUserProgressSync()
+                val limit = userProgress?.dailyGoal ?: 10
+                lastLoadedLimit = limit
+
                 val words = wordRepository.getWordsForLearning(
                     maxDifficulty = 5,
-                    limit = 20
+                    limit = limit
                 ).first()
 
                 if (words.isEmpty()) {
-                    val unlearnedWords = wordRepository.getUnlearnedWords(20).first()
+                    val unlearnedWords = wordRepository.getUnlearnedWords(limit).first()
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         words = unlearnedWords,
-                        isComplete = unlearnedWords.isEmpty()
+                        isComplete = false, // Never start a fresh load as 'complete'
+                        currentIndex = 0,
+                        rememberedCount = 0,
+                        forgotCount = 0
                     )
                 } else {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        words = words
+                        words = words,
+                        isComplete = false,
+                        currentIndex = 0,
+                        rememberedCount = 0,
+                        forgotCount = 0
                     )
                 }
             } catch (e: Exception) {
@@ -79,15 +92,59 @@ class FlashcardViewModel @Inject constructor(
         }
     }
 
+    fun loadReviewWords() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            try {
+                val userProgress = userRepository.getUserProgressSync()
+                val limit = userProgress?.dailyGoal ?: 10
+                lastLoadedLimit = limit
+
+                val reviewWords = wordRepository.getRecentlyStudiedWords(limit).first()
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    words = reviewWords,
+                    isComplete = false,
+                    currentIndex = 0,
+                    rememberedCount = 0,
+                    forgotCount = 0
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Failed to load review words"
+                )
+            }
+        }
+    }
+
     fun flipCard() {
         _uiState.value = _uiState.value.copy(isFlipped = !_uiState.value.isFlipped)
+    }
+
+    fun checkAndReloadIfNeeded() {
+        viewModelScope.launch {
+            val userProgress = userRepository.getUserProgressSync()
+            val limit = userProgress?.dailyGoal ?: 10
+            val currentWords = _uiState.value.words
+            val isAtStart = _uiState.value.currentIndex == 0
+            
+            // Reload if:
+            // 1. Goal changed and we are at the start of a session
+            // 2. Currently empty (user might have added words in the word library)
+            if (!_uiState.value.isLoading && !_uiState.value.isComplete) {
+                if ((isAtStart && lastLoadedLimit != limit) || currentWords.isEmpty()) {
+                    loadWords()
+                }
+            }
+        }
     }
 
     fun processRemembered() {
         viewModelScope.launch {
             val currentWord = _uiState.value.currentWord ?: return@launch
             processReview(currentWord.id, remembered = true)
-            moveToNextCard()
+            moveToNextCard(remembered = true)
         }
     }
 
@@ -95,19 +152,30 @@ class FlashcardViewModel @Inject constructor(
         viewModelScope.launch {
             val currentWord = _uiState.value.currentWord ?: return@launch
             processReview(currentWord.id, remembered = false)
-            moveToNextCard()
+            moveToNextCard(remembered = false)
         }
     }
 
     private suspend fun processReview(wordId: Long, remembered: Boolean) {
         val quality = if (remembered) 4 else 1
         try {
-            reviewRepository.processReview(wordId, quality)
+            val oldRecord = reviewRepository.getReviewRecordByWordIdSync(wordId)
+            val wasMastered = oldRecord?.repetitions ?: 0 >= 3
+            
+            val newRecord = reviewRepository.processReview(wordId, quality)
+            val isNowMastered = newRecord.repetitions >= 3
+
+            wordRepository.updateLastStudiedDate(wordId, System.currentTimeMillis())
+            
             if (remembered) {
                 wordRepository.updateLearnedStatus(wordId, true)
                 userRepository.incrementWordsLearned()
             }
             userRepository.incrementWordsReviewed()
+
+            if (!wasMastered && isNowMastered) {
+                userRepository.incrementMasteredWords()
+            }
         } catch (e: Exception) {
             _uiState.value = _uiState.value.copy(
                 error = e.message ?: "Failed to process review"
@@ -115,29 +183,26 @@ class FlashcardViewModel @Inject constructor(
         }
     }
 
-    private fun moveToNextCard() {
+    private fun moveToNextCard(remembered: Boolean) {
         val currentState = _uiState.value
         val nextIndex = currentState.currentIndex + 1
+
+        val newRemembered = currentState.rememberedCount + if (remembered) 1 else 0
+        val newForgot = currentState.forgotCount + if (!remembered) 1 else 0
 
         if (nextIndex >= currentState.words.size) {
             _uiState.value = currentState.copy(
                 isComplete = true,
-                isFlipped = false
+                isFlipped = false,
+                rememberedCount = newRemembered,
+                forgotCount = newForgot
             )
         } else {
             _uiState.value = currentState.copy(
                 currentIndex = nextIndex,
                 isFlipped = false,
-                rememberedCount = if (currentState.isFlipped) {
-                    currentState.rememberedCount + 1
-                } else {
-                    currentState.rememberedCount
-                },
-                forgotCount = if (!currentState.isFlipped) {
-                    currentState.forgotCount + 1
-                } else {
-                    currentState.forgotCount
-                }
+                rememberedCount = newRemembered,
+                forgotCount = newForgot
             )
         }
     }

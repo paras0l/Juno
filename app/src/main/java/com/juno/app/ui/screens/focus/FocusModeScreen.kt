@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Pause
@@ -68,7 +70,13 @@ fun FocusModeScreen(
     var isRunning by remember { mutableStateOf(false) }
     var isPaused by remember { mutableStateOf(false) }
 
-    LaunchedEffect(isRunning, isPaused, selectedDuration) {
+    LaunchedEffect(selectedDuration) {
+        if (!isRunning) {
+            timeLeft = selectedDuration * 60
+        }
+    }
+
+    LaunchedEffect(isRunning, isPaused, timeLeft) {
         while (isRunning && !isPaused && timeLeft > 0) {
             delay(1000)
             timeLeft--
@@ -82,6 +90,12 @@ fun FocusModeScreen(
     val progress = if (selectedDuration > 0) {
         timeLeft.toFloat() / (selectedDuration * 60)
     } else 0f
+
+    val circleSize = when {
+        selectedDuration <= 25 -> 220.dp
+        selectedDuration <= 45 -> 210.dp
+        else -> 200.dp
+    }
 
     Scaffold(
         topBar = {
@@ -102,26 +116,28 @@ fun FocusModeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(horizontal = 24.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
             if (!isRunning) {
                 DurationSelector(
                     selectedDuration = selectedDuration,
                     onDurationSelected = { selectedDuration = it }
                 )
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
             TimerCircle(
                 progress = progress,
                 timeLeft = timeLeft,
-                modifier = Modifier.size(280.dp)
+                modifier = Modifier.size(circleSize)
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             if (!isRunning) {
                 Button(
@@ -188,7 +204,7 @@ fun FocusModeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -236,6 +252,8 @@ fun FocusModeScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -256,13 +274,14 @@ private fun DurationSelector(
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             durations.forEach { duration ->
                 DurationChip(
                     duration = duration,
                     isSelected = selectedDuration == duration,
-                    onClick = { onDurationSelected(duration) }
+                    onClick = { onDurationSelected(duration) },
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
@@ -273,10 +292,12 @@ private fun DurationSelector(
 private fun DurationChip(
     duration: Int,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
         onClick = onClick,
+        modifier = modifier,
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) {
                 MaterialTheme.colorScheme.primary
@@ -287,14 +308,17 @@ private fun DurationChip(
         shape = RoundedCornerShape(12.dp)
     ) {
         Text(
-            text = "$duration 分钟",
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+            text = "${duration}min",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
             color = if (isSelected) {
                 MaterialTheme.colorScheme.onPrimary
             } else {
                 MaterialTheme.colorScheme.onSurface
             },
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
     }
 }
