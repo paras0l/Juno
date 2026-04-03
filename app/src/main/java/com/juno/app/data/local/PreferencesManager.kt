@@ -39,6 +39,8 @@ class PreferencesManager @Inject constructor(
         private val THEME_MODE = stringPreferencesKey("theme_mode")
         private val FOCUS_MODE_DURATION = intPreferencesKey("focus_mode_duration")
         private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+        private val FLOAT_WINDOW_X = intPreferencesKey("float_window_x")
+        private val FLOAT_WINDOW_Y = intPreferencesKey("float_window_y")
     }
 
     val onboardingCompleted: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -198,6 +200,21 @@ class PreferencesManager @Inject constructor(
     suspend fun setOnboardingCompleted(completed: Boolean) {
         dataStore.edit { preferences ->
             preferences[ONBOARDING_COMPLETED] = completed
+        }
+    }
+
+    val floatWindowX: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[FLOAT_WINDOW_X] ?: 100
+    }
+
+    val floatWindowY: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[FLOAT_WINDOW_Y] ?: 200
+    }
+
+    suspend fun setFloatWindowPosition(x: Int, y: Int) {
+        dataStore.edit { preferences ->
+            preferences[FLOAT_WINDOW_X] = x
+            preferences[FLOAT_WINDOW_Y] = y
         }
     }
 

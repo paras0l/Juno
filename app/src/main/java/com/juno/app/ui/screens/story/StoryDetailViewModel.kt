@@ -69,6 +69,7 @@ class StoryDetailViewModel @Inject constructor(
     fun markAsCompleted() {
         viewModelScope.launch {
             try {
+                @Suppress("UNUSED_VARIABLE")
                 _uiState.value.story?.let { story ->
                     storyRepository.updateCompletionStatus(storyId, true)
                 }

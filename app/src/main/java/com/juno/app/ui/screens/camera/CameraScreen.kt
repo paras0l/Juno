@@ -67,7 +67,7 @@ fun CameraScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+    @Suppress("UNUSED_VARIABLE") val lifecycleOwner = LocalLifecycleOwner.current
 
     val imageCapture = remember {
         ImageCapture.Builder()

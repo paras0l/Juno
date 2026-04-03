@@ -1,29 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@android:color/transparent">
+<!--
+  Floating window — 240dp × 260dp, ALL children use gravity=top|center_horizontal
+  with explicit marginTop so WRAP_CONTENT window measurement is unambiguous.
 
-    <ImageButton
-        android:id="@+id/btnCapture"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:background="@drawable/floating_window_button"
-        android:src="@android:drawable/ic_menu_camera"
-        android:contentDescription="Capture text"
-        android:scaleType="centerInside"
-        android:padding="12dp" />
+  Vertical layout (all margins from container top):
 
-    <ImageButton
-        android:id="@+id/btnClose"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/floating_window_button"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        android:contentDescription="Close"
-        android:scaleType="centerInside"
-        android:padding="8dp" />
+    0 ─────────────────────────────
+      [closeBubble]  top=10   h=52  →  [10, 62]dp
+                              gap=19dp
+      [scanBubble]   top=81   h=52  →  [81, 133]dp
+                              gap=41dp
+      [floatingDot]  top=174  h=78  →  [174, 252]dp
+    260 ─────────────────────────────
 
-</LinearLayout>
+  Aurora dot center  = 174 + 39 = 213dp from top
+  scanBubble  center =  81 + 26 = 107dp from top   → spring offset = 213-107 = 106dp
+  closeBubble center =  10 + 26 =  36dp from top   → spring offset = 213-36  = 177dp
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/floatingRoot"
+    android:layout_width="240dp"
+    android:layout_height="260dp"
+    android:background="@android:color/transparent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- ── Upper bubble: Close (✕) — top=10dp ──────────────────────────── -->
+    <FrameLayout
+        android:id="@+id/closeBubble"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/floating_radial_bubble_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:alpha="0"
+        android:elevation="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:contentDescription="关闭" />
+    </FrameLayout>
+
+    <!-- ── Lower bubble: OCR Scan (⊙) — top=81dp ───────────────────────── -->
+    <FrameLayout
+        android:id="@+id/scanBubble"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="81dp"
+        android:background="@drawable/floating_radial_bubble_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:alpha="0"
+        android:elevation="16dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_scan"
+            android:contentDescription="识别文字" />
+    </FrameLayout>
+
+    <!-- ── Aurora button — top=174dp (gap 41dp from scanBubble) ─────────── -->
+    <FrameLayout
+        android:id="@+id/floatingDot"
+        android:layout_width="78dp"
+        android:layout_height="78dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="174dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:clipChildren="false"
+        android:elevation="14dp">
+
+        <com.juno.app.ui.views.AuroraPulseView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_text_cursor"
+            android:alpha="0.90"
+            android:contentDescription="取词" />
+
+    </FrameLayout>
+
+</FrameLayout>

@@ -1,5 +1,6 @@
 package com.juno.app.ui.screens.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,11 +17,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.School
@@ -34,12 +36,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,10 +47,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.juno.app.ui.theme.AccentBlueEnd
+import com.juno.app.ui.theme.AccentBlueStart
+import com.juno.app.ui.theme.AccentOrangeEnd
+import com.juno.app.ui.theme.AccentOrangeStart
+
+private val CardShape = RoundedCornerShape(24.dp)
+private val SmallCardShape = RoundedCornerShape(20.dp)
 
 @Composable
 fun HomeScreen(
@@ -68,66 +77,80 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    } else {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                GreetingSection(
-                    streak = uiState.currentStreak,
-                    wordsLearnedToday = uiState.wordsLearnedToday,
-                    dailyGoal = uiState.dailyGoal,
-                    onNavigateToSettings = onNavigateToSettings
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFF8F9FF),
+                        Color(0xFFF0F4FF)
+                    )
                 )
-            }
+            )
+    ) {
+        if (uiState.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                item {
+                    GreetingSection(
+                        streak = uiState.currentStreak,
+                        wordsLearnedToday = uiState.wordsLearnedToday,
+                        dailyGoal = uiState.dailyGoal,
+                        onNavigateToSettings = onNavigateToSettings
+                    )
+                }
 
-            item {
-                DailyProgressCard(
-                    wordsLearnedToday = uiState.wordsLearnedToday,
-                    dailyGoal = uiState.dailyGoal
-                )
-            }
+                item {
+                    DailyProgressCard(
+                        wordsLearnedToday = uiState.wordsLearnedToday,
+                        dailyGoal = uiState.dailyGoal
+                    )
+                }
 
-            item {
-                QuickActionsSection(
-                    dueReviewsCount = uiState.dueReviewsCount,
-                    onNavigateToFlashcard = onNavigateToFlashcard,
-                    onNavigateToReview = onNavigateToReview,
-                    onNavigateToCamera = onNavigateToCamera,
-                    onNavigateToFocusMode = onNavigateToFocusMode
-                )
-            }
+                item {
+                    QuickActionsSection(
+                        dueReviewsCount = uiState.dueReviewsCount,
+                        onNavigateToFlashcard = onNavigateToFlashcard,
+                        onNavigateToReview = onNavigateToReview,
+                        onNavigateToCamera = onNavigateToCamera,
+                        onNavigateToFocusMode = onNavigateToFocusMode
+                    )
+                }
 
-            item {
-                StoryCard(onNavigateToStory = onNavigateToStory)
-            }
+                item {
+                    StoryCard(onNavigateToStory = onNavigateToStory)
+                }
 
-            item {
-                TutorCard(onNavigateToTutorSelection = onNavigateToTutorSelection)
-            }
+                item {
+                    TutorCard(onNavigateToTutorSelection = onNavigateToTutorSelection)
+                }
 
-            item {
-                WordListQuickAccess(onNavigateToWordList = onNavigateToWordList)
-            }
+                item {
+                    WordListQuickAccess(onNavigateToWordList = onNavigateToWordList)
+                }
 
-            item {
-                StatsOverview(
-                    totalWordsLearned = uiState.totalWordsLearned,
-                    masteredWords = uiState.masteredWords,
-                    wordsReviewedToday = uiState.wordsReviewedToday,
-                    onLearnedWordsClick = onNavigateToLearnedWords,
-                    onMasteredWordsClick = onNavigateToMasteredWords,
-                    onReviewedTodayClick = onNavigateToReview
-                )
+                item {
+                    StatsOverview(
+                        totalWordsLearned = uiState.totalWordsLearned,
+                        masteredWords = uiState.masteredWords,
+                        wordsReviewedToday = uiState.wordsReviewedToday,
+                        onLearnedWordsClick = onNavigateToLearnedWords,
+                        onMasteredWordsClick = onNavigateToMasteredWords,
+                        onReviewedTodayClick = onNavigateToReview
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
@@ -135,52 +158,45 @@ fun HomeScreen(
 
 @Composable
 private fun GreetingSection(
-    streak: Int,
+    @Suppress("UNUSED_PARAMETER") streak: Int,
     wordsLearnedToday: Int,
     dailyGoal: Int,
     onNavigateToSettings: () -> Unit
 ) {
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "欢迎回来!",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                if (streak > 0) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.Default.LocalFireDepartment,
-                        contentDescription = "Streak",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(
-                        text = "$streak 天",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-            IconButton(onClick = onNavigateToSettings) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "设置",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Text(
+                text = "欢迎回来!",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1A1A1A)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = if (wordsLearnedToday >= dailyGoal) "今日目标已完成!" else "今日已学习 $wordsLearnedToday / $dailyGoal 个单词",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFF666666)
+            )
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = if (wordsLearnedToday >= dailyGoal) "今日目标已完成!" else "今日已学习 $wordsLearnedToday / $dailyGoal 个单词",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        IconButton(
+            onClick = onNavigateToSettings,
+            modifier = Modifier
+                .size(48.dp)
+                .background(
+                    Color.White.copy(alpha = 0.8f),
+                    RoundedCornerShape(16.dp)
+                )
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "设置",
+                tint = Color(0xFF666666)
+            )
+        }
     }
 }
 
@@ -189,14 +205,14 @@ private fun DailyProgressCard(
     wordsLearnedToday: Int,
     dailyGoal: Int
 ) {
-    ElevatedCard(
+    Surface(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+        shape = CardShape,
+        color = Color.White.copy(alpha = 0.85f),
+        shadowElevation = 4.dp
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(20.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -206,28 +222,29 @@ private fun DailyProgressCard(
                 Text(
                     text = "今日进度",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF1A1A1A)
                 )
                 Text(
                     text = "$wordsLearnedToday / $dailyGoal",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = Color(0xFF2196F3)
                 )
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             LinearProgressIndicator(
                 progress = { (wordsLearnedToday.toFloat() / dailyGoal).coerceIn(0f, 1f) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
+                    .height(10.dp)
+                    .clip(RoundedCornerShape(5.dp)),
                 color = if (wordsLearnedToday >= dailyGoal) {
-                    MaterialTheme.colorScheme.secondary
+                    Color(0xFF4CAF50)
                 } else {
-                    MaterialTheme.colorScheme.primary
+                    Color(0xFF2196F3)
                 },
-                trackColor = MaterialTheme.colorScheme.surfaceVariant
+                trackColor = Color(0xFFE8EEFF)
             )
         }
     }
@@ -242,12 +259,6 @@ private fun QuickActionsSection(
     onNavigateToFocusMode: () -> Unit
 ) {
     Column {
-        Text(
-            text = "快速开始",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -257,6 +268,7 @@ private fun QuickActionsSection(
                 icon = Icons.Default.School,
                 title = "背单词",
                 subtitle = "学习新单词",
+                gradientColors = listOf(AccentOrangeStart, AccentOrangeEnd),
                 onClick = onNavigateToFlashcard
             )
             QuickActionCard(
@@ -264,6 +276,7 @@ private fun QuickActionsSection(
                 icon = Icons.Default.Refresh,
                 title = "复习",
                 subtitle = if (dueReviewsCount > 0) "$dueReviewsCount 待复习" else "暂无复习",
+                gradientColors = listOf(AccentBlueStart, AccentBlueEnd),
                 onClick = onNavigateToReview
             )
         }
@@ -275,34 +288,36 @@ private fun QuickActionsSection(
             Card(
                 modifier = Modifier.weight(1f),
                 onClick = onNavigateToFocusMode,
+                shape = SmallCardShape,
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
+                    containerColor = Color.White.copy(alpha = 0.85f)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.Timer,
                         contentDescription = "Focus Mode",
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        modifier = Modifier.size(28.dp),
+                        tint = Color(0xFF4CAF50)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
                             text = "专注模式",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = Color(0xFF1A1A1A)
                         )
                         Text(
                             text = "番茄钟",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                            color = Color(0xFF888888)
                         )
                     }
                 }
@@ -310,34 +325,36 @@ private fun QuickActionsSection(
             Card(
                 modifier = Modifier.weight(1f),
                 onClick = onNavigateToCamera,
+                shape = SmallCardShape,
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                )
+                    containerColor = Color.White.copy(alpha = 0.85f)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.CameraAlt,
                         contentDescription = "Visual Anchor",
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+                        modifier = Modifier.size(28.dp),
+                        tint = Color(0xFF9C27B0)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
                             text = "视觉锚定",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                            color = Color(0xFF1A1A1A)
                         )
                         Text(
                             text = "拍照学单词",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f)
+                            color = Color(0xFF888888)
                         )
                     }
                 }
@@ -352,38 +369,54 @@ private fun QuickActionCard(
     icon: ImageVector,
     title: String,
     subtitle: String,
+    gradientColors: List<Color>,
     onClick: () -> Unit
 ) {
     Card(
         modifier = modifier,
         onClick = onClick,
+        shape = SmallCardShape,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = Color.White.copy(alpha = 0.85f)
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .background(
+                    Brush.linearGradient(colors = gradientColors.map { it.copy(alpha = 0.1f) })
+                )
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = title,
-                modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .background(
+                        Brush.linearGradient(colors = gradientColors),
+                        RoundedCornerShape(16.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    modifier = Modifier.size(28.dp),
+                    tint = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1A1A1A)
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color(0xFF888888)
             )
         }
     }
@@ -391,40 +424,65 @@ private fun QuickActionCard(
 
 @Composable
 private fun StoryCard(onNavigateToStory: () -> Unit) {
-    ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onNavigateToStory,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer
-        )
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onNavigateToStory),
+        shape = CardShape,
+        color = Color.White.copy(alpha = 0.85f),
+        shadowElevation = 4.dp
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF9C27B0).copy(alpha = 0.1f),
+                            Color(0xFF673AB7).copy(alpha = 0.1f)
+                        )
+                    )
+                )
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.AutoStories,
-                contentDescription = "AI Story",
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.onTertiaryContainer
-            )
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .background(
+                        Brush.linearGradient(colors = listOf(Color(0xFF9C27B0), Color(0xFF673AB7))),
+                        RoundedCornerShape(16.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AutoStories,
+                    contentDescription = "AI Story",
+                    modifier = Modifier.size(28.dp),
+                    tint = Color.White
+                )
+            }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "AI 故事阅读",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                    color = Color(0xFF1A1A1A)
                 )
                 Text(
                     text = "通过有趣的故事学习英语",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f)
+                    color = Color(0xFF666666)
                 )
             }
-            FilledTonalButton(onClick = onNavigateToStory) {
+            Button(
+                onClick = onNavigateToStory,
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF9C27B0)
+                )
+            ) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
                     contentDescription = "Start"
@@ -436,38 +494,38 @@ private fun StoryCard(onNavigateToStory: () -> Unit) {
 
 @Composable
 private fun WordListQuickAccess(onNavigateToWordList: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onNavigateToWordList,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onNavigateToWordList),
+        shape = CardShape,
+        color = Color.White.copy(alpha = 0.85f),
+        shadowElevation = 2.dp
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-@Suppress("DEPRECATION")
             Icon(
-                imageVector = Icons.Default.MenuBook,
+                imageVector = Icons.AutoMirrored.Filled.MenuBook,
                 contentDescription = "Word List",
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                modifier = Modifier.size(28.dp),
+                tint = Color(0xFF4CAF50)
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "单词本",
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1A1A1A)
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = "查看全部 >",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                color = Color(0xFF888888)
             )
         }
     }
@@ -482,18 +540,22 @@ private fun StatsOverview(
     onMasteredWordsClick: () -> Unit,
     onReviewedTodayClick: () -> Unit
 ) {
-    ElevatedCard(
-        modifier = Modifier.fillMaxWidth()
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = CardShape,
+        color = Color.White.copy(alpha = 0.85f),
+        shadowElevation = 4.dp
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(20.dp)
         ) {
             Text(
                 text = "学习统计",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF1A1A1A)
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -502,18 +564,21 @@ private fun StatsOverview(
                     icon = Icons.Default.CheckCircle,
                     value = totalWordsLearned.toString(),
                     label = "已学单词",
+                    valueColor = Color(0xFF2196F3),
                     onClick = onLearnedWordsClick
                 )
                 StatItem(
                     icon = Icons.Default.School,
                     value = masteredWords.toString(),
                     label = "已掌握",
+                    valueColor = Color(0xFF4CAF50),
                     onClick = onMasteredWordsClick
                 )
                 StatItem(
                     icon = Icons.Default.Refresh,
                     value = wordsReviewedToday.toString(),
                     label = "今日复习",
+                    valueColor = Color(0xFF9C27B0),
                     onClick = onReviewedTodayClick
                 )
             }
@@ -526,74 +591,99 @@ private fun StatItem(
     icon: ImageVector,
     value: String,
     label: String,
+    valueColor: Color = Color(0xFF2196F3),
     onClick: (() -> Unit)? = null
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = if (onClick != null) {
             Modifier
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .clickable(onClick = onClick)
-                .padding(8.dp)
+                .padding(12.dp)
         } else {
-            Modifier.padding(8.dp)
+            Modifier.padding(12.dp)
         }
     ) {
         Icon(
             imageVector = icon,
             contentDescription = label,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(24.dp)
+            tint = valueColor,
+            modifier = Modifier.size(28.dp)
         )
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = value,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = valueColor
         )
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary
+            color = Color(0xFF888888)
         )
     }
 }
 
 @Composable
 private fun TutorCard(onNavigateToTutorSelection: () -> Unit) {
-    ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onNavigateToTutorSelection,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onNavigateToTutorSelection),
+        shape = CardShape,
+        color = Color.White.copy(alpha = 0.85f),
+        shadowElevation = 4.dp
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF2196F3).copy(alpha = 0.1f),
+                            Color(0xFF03A9F4).copy(alpha = 0.1f)
+                        )
+                    )
+                )
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.School,
-                contentDescription = "AI Tutor",
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .background(
+                        Brush.linearGradient(colors = listOf(Color(0xFF2196F3), Color(0xFF03A9F4))),
+                        RoundedCornerShape(16.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.School,
+                    contentDescription = "AI Tutor",
+                    modifier = Modifier.size(28.dp),
+                    tint = Color.White
+                )
+            }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "AI 导师对话",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = Color(0xFF1A1A1A)
                 )
                 Text(
                     text = "与AI导师聊天学习英语",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                    color = Color(0xFF666666)
                 )
             }
-            FilledTonalButton(onClick = onNavigateToTutorSelection) {
+            FilledTonalButton(
+                onClick = onNavigateToTutorSelection,
+                shape = RoundedCornerShape(12.dp)
+            ) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
                     contentDescription = "Start"

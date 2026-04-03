@@ -23,18 +23,23 @@ class VoiceRecordingManager @Inject constructor(
     private var currentFilePath: String? = null
 
     fun startRecording(): String? {
+        android.util.Log.d("VoiceRecording", "startRecording called, current recording: ${_isRecording.value}")
+        
         if (_isRecording.value) {
+            android.util.Log.d("VoiceRecording", "Already recording, returning current path")
             return currentFilePath
         }
 
         val audioDir = File(context.filesDir, "recordings")
         if (!audioDir.exists()) {
+            android.util.Log.d("VoiceRecording", "Creating recordings directory")
             audioDir.mkdirs()
         }
 
         val fileName = "recording_${System.currentTimeMillis()}.m4a"
         val file = File(audioDir, fileName)
         currentFilePath = file.absolutePath
+        android.util.Log.d("VoiceRecording", "Recording file: $currentFilePath")
 
         mediaRecorder = createMediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -45,11 +50,14 @@ class VoiceRecordingManager @Inject constructor(
             setOutputFile(currentFilePath)
 
             try {
+                android.util.Log.d("VoiceRecording", "Preparing MediaRecorder...")
                 prepare()
+                android.util.Log.d("VoiceRecording", "Starting MediaRecorder...")
                 start()
                 _isRecording.value = true
+                android.util.Log.d("VoiceRecording", "Recording started successfully")
             } catch (e: Exception) {
-                e.printStackTrace()
+                android.util.Log.e("VoiceRecording", "Failed to start recording: ${e.message}", e)
                 release()
                 currentFilePath = null
                 return null

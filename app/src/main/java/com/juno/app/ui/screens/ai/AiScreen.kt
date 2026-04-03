@@ -1,5 +1,6 @@
 package com.juno.app.ui.screens.ai
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,11 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import android.content.Intent
+import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.AutoStories
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.PictureInPicture
-import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -38,13 +38,17 @@ import com.juno.app.service.FloatingWindowService
 fun AiScreen(
     onNavigateToTutorSelection: () -> Unit,
     onNavigateToStory: () -> Unit,
-    onNavigateToCamera: () -> Unit
+    onNavigateToCamera: () -> Unit,
+    onNavigateToOcrHistory: () -> Unit   // ← new: navigate to OCR history page
 ) {
     val context = LocalContext.current
 
+    // NOTE: OCR callback is registered by OcrHistoryScreen (DisposableEffect).
+    // AiScreen only starts the service and navigates — no dialog needed here.
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(24.dp), // 8dp grid, lots of breathing room
+        contentPadding = PaddingValues(24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         item {
@@ -82,9 +86,10 @@ fun AiScreen(
         item {
             AiFeatureCard(
                 title = "全局悬浮取词",
-                description = "开启悬浮窗后，在任何 App 或网页屏幕上随时框选识别生词。",
+                description = "开启悬浮球后，在任何 App 或网页随时识别文字，识别结果保存到取词记录。",
                 icon = Icons.Outlined.PictureInPicture,
                 onClick = {
+                    // 1. Start the floating window service
                     val serviceIntent = Intent(context, FloatingWindowService::class.java).apply {
                         action = FloatingWindowService.ACTION_START
                     }
@@ -93,6 +98,8 @@ fun AiScreen(
                     } else {
                         context.startService(serviceIntent)
                     }
+                    // 2. Navigate to history page so user can see results
+                    onNavigateToOcrHistory()
                 }
             )
         }
@@ -119,7 +126,7 @@ private fun AiFeatureCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(24.dp), // Radius 24dp requirement
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),

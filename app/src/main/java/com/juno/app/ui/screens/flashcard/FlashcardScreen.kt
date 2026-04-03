@@ -48,6 +48,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.OutlinedTextField
@@ -67,6 +68,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -95,11 +97,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+private val CardShape = RoundedCornerShape(24.dp)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToPronunciation: () -> Unit,
+    onNavigateToPronunciation: (String?) -> Unit,
     onNavigateToWordList: () -> Unit,
     viewModel: FlashcardViewModel = hiltViewModel()
 ) {
@@ -130,7 +134,7 @@ fun FlashcardScreen(
                     style = MaterialTheme.typography.titleLarge
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onNavigateToPronunciation) {
+                    IconButton(onClick = { onNavigateToPronunciation(uiState.currentWord?.word) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.VolumeUp,
                             contentDescription = "发音",
@@ -354,7 +358,7 @@ private fun SwipeableFlashcardContent(
                             if (!currentWord.phonetic.isNullOrEmpty()) {
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = currentWord.phonetic!!,
+                                    text = currentWord.phonetic,
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontStyle = FontStyle.Italic,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -485,13 +489,15 @@ private fun SwipeableFlashcardContent(
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.primary
                                 )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = currentWord.phonetic ?: "",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontStyle = FontStyle.Italic,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                                currentWord.phonetic?.let { phonetic ->
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = phonetic,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontStyle = FontStyle.Italic,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
                             }
                             
                             Spacer(modifier = Modifier.height(32.dp))
@@ -517,7 +523,7 @@ private fun SwipeableFlashcardContent(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = currentWord.example ?: "",
+                                    text = currentWord.example,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     lineHeight = MaterialTheme.typography.bodyLarge.lineHeight

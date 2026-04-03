@@ -42,7 +42,8 @@ fun MainScreen(
     onNavigateToFocusMode: () -> Unit,
     onNavigateToLearnedWords: () -> Unit,
     onNavigateToMasteredWords: () -> Unit,
-    onNavigateToPronunciation: () -> Unit
+    onNavigateToPronunciation: (String?) -> Unit,
+    onNavigateToOcrHistory: () -> Unit
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
@@ -120,13 +121,16 @@ fun MainScreen(
             when (selectedTab) {
                 0 -> FlashcardScreen(
                     onNavigateBack = { /* No-op here since it's the root */ },
-                    onNavigateToPronunciation = onNavigateToPronunciation,
+                    onNavigateToPronunciation = { word ->
+                        word?.let { onNavigateToPronunciation(it) }
+                    },
                     onNavigateToWordList = onNavigateToWordList
                 )
                 1 -> AiScreen(
                     onNavigateToTutorSelection = onNavigateToTutorSelection,
                     onNavigateToStory = onNavigateToStory,
-                    onNavigateToCamera = onNavigateToCamera
+                    onNavigateToCamera = onNavigateToCamera,
+                    onNavigateToOcrHistory = onNavigateToOcrHistory
                 )
                 2 -> DashboardScreen(
                     onNavigateToSettings = onNavigateToSettings,

@@ -2,10 +2,13 @@ package com.juno.app
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,6 +29,16 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var preferencesManager: PreferencesManager
+
+    private val overlayPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { _ ->
+        if (Settings.canDrawOverlays(this)) {
+            startFloatingService()
+        } else {
+            Toast.makeText(this, "未能获得悬浮窗权限", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +99,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
             FloatingWindowService.ACTION_START -> {
-                startFloatingService()
+                checkOverlayPermissionAndStartService()
             }
         }
     }
@@ -112,6 +125,19 @@ class MainActivity : ComponentActivity() {
     private fun extractUrl(text: String): String? {
         val urlPattern = Regex("https?://[\\w\\-._~:/?#\\[\\]@!$&'()*+,;=%]+")
         return urlPattern.find(text)?.value
+    }
+
+    private fun checkOverlayPermissionAndStartService() {
+        if (!Settings.canDrawOverlays(this)) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            overlayPermissionLauncher.launch(intent)
+            Toast.makeText(this, "请开启悬浮窗权限以使用 OCR 功能", Toast.LENGTH_LONG).show()
+        } else {
+            startFloatingService()
+        }
     }
 
     private fun startFloatingService() {

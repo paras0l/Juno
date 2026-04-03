@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Text I-beam cursor icon (text-selection symbol) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Top horizontal cap -->
+    <path
+        android:pathData="M8,4 L16,4"
+        android:strokeWidth="2"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+
+    <!-- Vertical stem -->
+    <path
+        android:pathData="M12,4 L12,20"
+        android:strokeWidth="2"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+
+    <!-- Bottom horizontal cap -->
+    <path
+        android:pathData="M8,20 L16,20"
+        android:strokeWidth="2"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+
+    <!-- Small selection highlight dots (text selection feel) -->
+    <path
+        android:pathData="M7,10 L7,10"
+        android:strokeWidth="2.5"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#99FFFFFF"
+        android:strokeLineCap="round" />
+
+    <path
+        android:pathData="M17,14 L17,14"
+        android:strokeWidth="2.5"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#99FFFFFF"
+        android:strokeLineCap="round" />
+
+</vector>

@@ -24,6 +24,7 @@ import com.juno.app.ui.screens.story.StoryDetailScreen
 import com.juno.app.ui.screens.story.StoryScreen
 import com.juno.app.ui.screens.tutor.TutorSelectionScreen
 import com.juno.app.ui.screens.wordlist.WordListScreen
+import com.juno.app.ui.screens.ocr.OcrHistoryScreen
 
 @Composable
 fun JunoNavHost(
@@ -64,14 +65,19 @@ fun JunoNavHost(
                 onNavigateToFocusMode = { navController.navigate(Screen.FocusMode.route) },
                 onNavigateToLearnedWords = { navController.navigate(Screen.WordList.createRoute("learned")) },
                 onNavigateToMasteredWords = { navController.navigate(Screen.WordList.createRoute("mastered")) },
-                onNavigateToPronunciation = { navController.navigate(Screen.Pronunciation.route) }
+                onNavigateToPronunciation = { word ->
+                    word?.let { navController.navigate(Screen.Pronunciation.createRoute(it)) }
+                },
+                onNavigateToOcrHistory = { navController.navigate(Screen.OcrHistory.route) }
             )
         }
 
         composable(Screen.Flashcard.route) {
             FlashcardScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPronunciation = { navController.navigate(Screen.Pronunciation.route) },
+                onNavigateToPronunciation = { word ->
+                    word?.let { navController.navigate(Screen.Pronunciation.createRoute(it)) }
+                },
                 onNavigateToWordList = { navController.navigate(Screen.WordList.createRoute()) }
             )
         }
@@ -143,9 +149,18 @@ fun JunoNavHost(
             )
         }
 
-        composable(Screen.Pronunciation.route) {
+        composable(
+            route = Screen.Pronunciation.route,
+            arguments = listOf(navArgument("word") {
+                type = NavType.StringType
+                defaultValue = ""
+                nullable = true
+            })
+        ) { backStackEntry ->
+            val word = backStackEntry.arguments?.getString("word")?.takeIf { it.isNotEmpty() }
             PronunciationScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                targetWord = word
             )
         }
 
@@ -188,6 +203,12 @@ fun JunoNavHost(
 
         composable(Screen.FocusMode.route) {
             FocusModeScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.OcrHistory.route) {
+            OcrHistoryScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

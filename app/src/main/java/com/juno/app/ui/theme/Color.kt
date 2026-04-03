@@ -21,6 +21,41 @@ val BackgroundDark = Color(0xFF121212)
 val SurfaceLight = Color(0xFFFFFFFF)
 val SurfaceDark = Color(0xFF1E1E1E)
 
+// Accent Gradients (Rule 4 - Visual Anchors)
+val AccentOrangeStart = Color(0xFFFF9D42)
+val AccentOrangeEnd = Color(0xFFFF6B00)
+val AccentPurpleStart = Color(0xFF9C27B0)
+val AccentPurpleEnd = Color(0xFF673AB7)
+val AccentBlueStart = Color(0xFF2196F3)
+val AccentBlueEnd = Color(0xFF03A9F4)
+
+// Soft Shadows (Rule 2 - Glassmorphism)
+val SoftShadowLight = Color(0x1A000000)
+val SoftShadowMedium = Color(0x26000000)
+val SoftShadowDark = Color(0x40000000)
+
+// Glass effect colors
+val GlassWhite = Color(0xCCFFFFFF)
+val GlassSurface = Color(0xF5FFFFFF)
+val GlassOverlay = Color(0x0A000000)
+
+// Gradient backgrounds
+val GradientBackgroundLight = listOf(
+    Color(0xFFF8F9FF),
+    Color(0xFFF0F4FF),
+    Color(0xFFE8EEFF)
+)
+
+val GradientBackgroundWarm = listOf(
+    Color(0xFFFFF8F0),
+    Color(0xFFFFF0E8),
+    Color(0xFFFFE8E0)
+)
+
+// Card colors with depth
+val CardElevated = Color(0xFFFAFBFF)
+val CardGlass = Color(0xE6FFFFFF)
+
 // Morandi Theme Colors (muted, earthy tones)
 val MorandiPrimary = Color(0xFF8FA1B3)      // 雾霾蓝 (Haze Blue)
 val MorandiSecondary = Color(0xFFD3C8B4)    // 暖奶茶 (Warm Milk Tea)

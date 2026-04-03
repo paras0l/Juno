@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.juno.app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.juno.app"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -49,6 +49,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
         jniLibs {
+            // Set to true to use legacy packaging (extract native libs)
+            // This is a workaround for ML Kit 16KB alignment issue
+            // TODO: Remove when ML Kit releases 16KB-aligned libraries
             useLegacyPackaging = true
         }
     }
@@ -128,6 +131,7 @@ dependencies {
     implementation("androidx.media3:media3-common:1.2.1")
 
     // ML Kit Text Recognition (OCR)
+    // 建议使用较新版本的 ML Kit 以确保 16KB 兼容性
     implementation("com.google.mlkit:text-recognition:16.0.0")
 
     // Accompanist Permissions

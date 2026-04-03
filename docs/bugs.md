@@ -83,3 +83,54 @@
 *更新时间: 2026-03-16*
 *版本: 1.0.1*
 *状态: 全部修复完成 🎉*
+
+---
+
+# Juno v1.0.2 Bug 修复清单
+
+## 已修复问题 (5/5) ✅
+
+### ✅ Bug #12: 悬浮窗无法拖动
+- **问题**: `setupFloatingBehavior()` 的 `OnTouchListener` 完全缺少 `ACTION_MOVE` 分支，手指滑动时窗口位置从未更新
+- **修复**:
+  - 新增 `ACTION_MOVE` 处理：记录手指起点与窗口起点，实时调用 `windowManager.updateViewLayout()`
+  - 以 8px 为阈值区分"点击"和"拖动"，避免误触发 OCR
+  - 拖动结束后将最终坐标通过 `preferencesManager.setFloatWindowPosition()` 持久化
+- **修改文件**: `FloatingWindowService.kt`
+
+### ✅ Bug #13: 长按菜单永远无法触发（setOnLongClickListener 死代码）
+- **问题**: `setOnTouchListener` 在 `ACTION_DOWN` 返回 `true` 完整消费了事件，View 内部的 `onTouchEvent` 不再运行，长按 Runnable 从未被 post，`setOnLongClickListener` 是死代码
+- **修复**:
+  - 移除 `setOnLongClickListener`
+  - 在 `ACTION_DOWN` 时用 `Handler.postDelayed()` 手动调度长按，超时时间取 `ViewConfiguration.getLongPressTimeout()`
+  - 拖动时（`ACTION_MOVE` 位移 > 8px）取消 pending 长按
+- **修改文件**: `FloatingWindowService.kt`
+
+### ✅ Bug #14: 长按松手后误触 OCR
+- **问题**: 长按弹出菜单后，手指松开时 `ACTION_UP` 触发，`isDragging=false`，会意外调用 `captureAndRecognize()`
+- **修复**:
+  - 新增 `isLongPressed` 标志位，长按回调执行时设为 `true`
+  - `ACTION_UP` 中三路分支：拖动结束 / 长按释放（静默）/ 短按触发 OCR
+- **修改文件**: `FloatingWindowService.kt`
+
+### ✅ Bug #15: captureScreen() 永远返回 null，OCR 从未真正执行
+- **问题**: `OcrAccessibilityService.captureScreen()` 在第 121 行硬编码 `return null`，Bitmap 路径需要 `MediaProjection API`，无障碍服务无法直接截图；文字通过 `listener` 通道传递但 `listener` 从未被赋值，文字彻底丢失
+- **修复**:
+  - 在 `captureAndRecognize()` 中，当 bitmap 为 null 时（当前必然如此），直接调用 `accessibilityService.getAllVisibleText()` 提取无障碍树文字
+  - ML Kit OCR 路径保留，作为未来接入 MediaProjection 后的升级入口
+  - 失败时给出用户友好的中文提示
+- **修改文件**: `FloatingWindowService.kt`
+
+### ✅ Bug #16: onTextRecognized 回调从未注册，OCR 结果永远丢失
+- **问题**: `FloatingWindowService.onTextRecognized` 是 companion object 中的静态 lambda，但整个项目（包括 `AiScreen`）没有任何地方赋值，即使 OCR 成功，结果也无处消费，用户看不到任何反馈
+- **修复**:
+  - 在 `AiScreen` 中通过 `DisposableEffect` 注册回调，将识别文字存入 `recognizedText` 状态
+  - 新增 `OcrResultDialog` Composable，`recognizedText` 非空时自动弹出展示识别结果
+  - `onDispose` 中清空回调，防止 lambda 持有已销毁的 context 造成泄漏
+- **修改文件**: `AiScreen.kt`
+
+---
+
+*更新时间: 2026-04-03*
+*版本: 1.0.2*
+*状态: 全部修复完成 🎉*

@@ -29,8 +29,7 @@ class FocusModeViewModel @Inject constructor(
 
     private fun loadStats() {
         viewModelScope.launch {
-            preferencesManager.focusModeDuration.collect { duration ->
-                // Could load stats from preferences in the future
+            preferencesManager.focusModeDuration.collect { _ ->
             }
         }
     }
