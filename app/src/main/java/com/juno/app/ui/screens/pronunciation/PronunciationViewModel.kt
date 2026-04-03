@@ -2,17 +2,14 @@ package com.juno.app.ui.screens.pronunciation
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Bundle
-import android.speech.RecognitionListener
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
+import android.media.MediaPlayer
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.juno.app.data.local.VoiceRecordingManager
 import com.juno.app.data.repository.TtsService
+import com.juno.app.data.local.entity.WordEntity
 import com.juno.app.domain.repository.WordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,30 +18,25 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.Locale
+import java.io.File
 import javax.inject.Inject
 
 data class PronunciationUiState(
     val isLoading: Boolean = true,
-    val words: List<com.juno.app.data.local.entity.WordEntity> = emptyList(),
-    val currentIndex: Int = 0,
-    val currentWord: com.juno.app.data.local.entity.WordEntity? = null,
-    val isPlaying: Boolean = false,
+    val words: List<WordEntity> = emptyList(),
+    val currentWord: WordEntity? = null,
+    val isOriginalPlaying: Boolean = false,
+    val isRecordingPlaying: Boolean = false,
     val isRecording: Boolean = false,
-    val recognizedText: String = "",
-    val score: Int? = null,
-    val totalScore: Int = 0,
+    val recordingFilePath: String? = null,
+    val recordingDurationMs: Long = 0,
     val isComplete: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val searchQuery: String = "",
+    val filteredWords: List<WordEntity> = emptyList()
 ) {
-    val totalWords: Int
-        get() = words.size
-
-    val progress: Float
-        get() = if (words.isEmpty()) 0f else (currentIndex.toFloat() / words.size)
-
     val averageScore: Int
-        get() = if (currentIndex == 0) 0 else (totalScore / currentIndex)
+        get() = 0
 }
 
 @HiltViewModel
@@ -58,59 +50,111 @@ class PronunciationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PronunciationUiState())
     val uiState: StateFlow<PronunciationUiState> = _uiState.asStateFlow()
 
-    private var speechRecognizer: SpeechRecognizer? = null
-    private var recordedWord: String? = null
-    private val completedScores = mutableListOf<Int>()
+    private var mediaPlayer: MediaPlayer? = null
+    private var passedWord: String? = null
+    private var recordingStartTime: Long = 0
+    private var timerJob: kotlinx.coroutines.Job? = null
 
-    init {
-        loadWords()
+    fun setTargetWord(word: String?) {
+        android.util.Log.d("PronunciationVM", "setTargetWord called with: $word")
+        passedWord = word
+        loadAllWords()
     }
 
-    private fun loadWords() {
+    private fun loadAllWords() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                val words = wordRepository.getAllWords().first()
-                if (words.isEmpty()) {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        words = emptyList(),
-                        isComplete = true
-                    )
+                val allWords = wordRepository.getAllWords().first()
+                val targetWord = passedWord
+                val current = if (targetWord != null && targetWord.isNotEmpty()) {
+                    allWords.find { it.word.equals(targetWord, ignoreCase = true) }
                 } else {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        words = words,
-                        currentWord = words.firstOrNull()
-                    )
+                    allWords.firstOrNull()
                 }
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    words = allWords,
+                    filteredWords = allWords.take(20),
+                    currentWord = current,
+                    error = if (allWords.isEmpty()) "没有可练习的单词" else null
+                )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message ?: "Failed to load words"
+                    error = e.message ?: "加载单词失败"
                 )
             }
         }
     }
 
+    fun searchWords(query: String) {
+        val allWords = _uiState.value.words
+        val filtered = if (query.isEmpty()) {
+            allWords.take(20)
+        } else {
+            allWords.filter { it.word.contains(query, ignoreCase = true) }.take(20)
+        }
+        _uiState.value = _uiState.value.copy(
+            searchQuery = query,
+            filteredWords = filtered
+        )
+    }
+
+    fun selectWord(word: WordEntity) {
+        _uiState.value = _uiState.value.copy(
+            currentWord = word,
+            recordingFilePath = null,
+            recordingDurationMs = 0,
+            searchQuery = "" // Reset search when a word is selected
+        )
+    }
+
     fun playOriginal() {
         val word = _uiState.value.currentWord?.word ?: return
-        _uiState.value = _uiState.value.copy(isPlaying = true)
+        _uiState.value = _uiState.value.copy(isOriginalPlaying = true)
         ttsService.speak(word)
         
         viewModelScope.launch {
             kotlinx.coroutines.delay(2000)
-            _uiState.value = _uiState.value.copy(isPlaying = false)
+            _uiState.value = _uiState.value.copy(isOriginalPlaying = false)
+        }
+    }
+
+    fun playRecording() {
+        val filePath = _uiState.value.recordingFilePath ?: return
+        if (!File(filePath).exists()) {
+            _uiState.value = _uiState.value.copy(error = "录音文件不存在")
+            return
+        }
+
+        try {
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(filePath)
+                prepare()
+                start()
+                setOnCompletionListener {
+                    _uiState.value = _uiState.value.copy(isRecordingPlaying = false)
+                }
+            }
+            _uiState.value = _uiState.value.copy(isRecordingPlaying = true)
+        } catch (e: Exception) {
+            _uiState.value = _uiState.value.copy(error = "播放录音失败: ${e.message}")
         }
     }
 
     fun startRecording() {
-        if (_uiState.value.isRecording) return
+        android.util.Log.d("PronunciationVM", "startRecording called")
+        
+        if (_uiState.value.isRecording) {
+            android.util.Log.d("PronunciationVM", "Already recording, returning")
+            return
+        }
 
-        // Check record audio permission
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
+        val permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+        
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             _uiState.value = _uiState.value.copy(
                 error = "需要麦克风权限才能录音，请在设置中授予录音权限"
             )
@@ -119,18 +163,30 @@ class PronunciationViewModel @Inject constructor(
 
         try {
             val filePath = voiceRecordingManager.startRecording()
+            
             if (filePath == null) {
                 _uiState.value = _uiState.value.copy(
                     error = "录音初始化失败，请检查麦克风是否被其他应用占用"
                 )
                 return
             }
+            recordingStartTime = System.currentTimeMillis()
             _uiState.value = _uiState.value.copy(
                 isRecording = true,
-                recognizedText = "",
-                score = null
+                recordingFilePath = filePath,
+                recordingDurationMs = 0
             )
-            startSpeechRecognition()
+            
+            // Start a timer to dynamically update the recording duration
+            timerJob?.cancel()
+            timerJob = viewModelScope.launch {
+                while (_uiState.value.isRecording) {
+                    kotlinx.coroutines.delay(100)
+                    _uiState.value = _uiState.value.copy(
+                        recordingDurationMs = System.currentTimeMillis() - recordingStartTime
+                    )
+                }
+            }
         } catch (e: Exception) {
             _uiState.value = _uiState.value.copy(
                 error = "录音启动失败: ${e.message ?: "未知错误"}"
@@ -139,158 +195,58 @@ class PronunciationViewModel @Inject constructor(
     }
 
     fun stopRecording() {
+        timerJob?.cancel()
         try {
             voiceRecordingManager.stopRecording()
         } catch (e: Exception) {
-            // Swallow errors on stop to avoid crash
             e.printStackTrace()
         }
-        _uiState.value = _uiState.value.copy(isRecording = false)
-        stopSpeechRecognition()
-    }
+        val duration = if (recordingStartTime > 0) System.currentTimeMillis() - recordingStartTime else 0
+        recordingStartTime = 0
 
-    private fun startSpeechRecognition() {
-        if (!SpeechRecognizer.isRecognitionAvailable(context)) {
-            _uiState.value = _uiState.value.copy(
-                error = "Speech recognition not available",
-                isRecording = false
-            )
-            return
-        }
-
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
-            setRecognitionListener(object : RecognitionListener {
-                override fun onReadyForSpeech(params: Bundle?) {}
-                override fun onBeginningOfSpeech() {}
-                override fun onRmsChanged(rmsdB: Float) {}
-                override fun onBufferReceived(buffer: ByteArray?) {}
-                override fun onEndOfSpeech() {}
-
-                override fun onError(error: Int) {
-                    val errorMessage = when (error) {
-                        SpeechRecognizer.ERROR_NO_MATCH -> "No speech detected"
-                        SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "No speech input"
-                        SpeechRecognizer.ERROR_AUDIO -> "Audio recording error"
-                        SpeechRecognizer.ERROR_CLIENT -> "Client side error"
-                        else -> "Recognition error: $error"
-                    }
-                    _uiState.value = _uiState.value.copy(
-                        isRecording = false,
-                        error = errorMessage
-                    )
-                }
-
-                override fun onResults(results: Bundle?) {
-                    val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    val recognized = matches?.firstOrNull() ?: ""
-                    processRecognitionResult(recognized)
-                }
-
-                override fun onPartialResults(partialResults: Bundle?) {
-                    val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    val partial = matches?.firstOrNull() ?: ""
-                    if (partial.isNotEmpty()) {
-                        _uiState.value = _uiState.value.copy(recognizedText = partial)
-                    }
-                }
-
-                override fun onEvent(eventType: Int, params: Bundle?) {}
-            })
-        }
-
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.US)
-            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-        }
-
-        speechRecognizer?.startListening(intent)
-    }
-
-    private fun stopSpeechRecognition() {
-        speechRecognizer?.stopListening()
-        speechRecognizer?.destroy()
-        speechRecognizer = null
-    }
-
-    private fun processRecognitionResult(recognized: String) {
-        val targetWord = _uiState.value.currentWord?.word ?: return
-
-        _uiState.value = _uiState.value.copy(recognizedText = recognized)
-
-        if (recognized.isNotEmpty()) {
-            val score = calculateScore(targetWord, recognized)
-            completedScores.add(score)
-            val totalScore = completedScores.sum()
-
-            _uiState.value = _uiState.value.copy(
-                score = score,
-                totalScore = totalScore
-            )
-        }
-    }
-
-    private fun calculateScore(target: String, recognized: String): Int {
-        val targetLower = target.lowercase().trim()
-        val recognizedLower = recognized.lowercase().trim()
-
-        if (targetLower == recognizedLower) return 100
-
-        val distance = levenshteinDistance(targetLower, recognizedLower)
-        val maxLength = maxOf(targetLower.length, recognizedLower.length)
-
-        if (maxLength == 0) return 100
-
-        val similarity = 1.0 - (distance.toDouble() / maxLength.toDouble())
-        return (similarity * 100).toInt().coerceIn(0, 100)
-    }
-
-    private fun levenshteinDistance(s1: String, s2: String): Int {
-        val m = s1.length
-        val n = s2.length
-        val dp = Array(m + 1) { IntArray(n + 1) }
-
-        for (i in 0..m) dp[i][0] = i
-        for (j in 0..n) dp[0][j] = j
-
-        for (i in 1..m) {
-            for (j in 1..n) {
-                val cost = if (s1[i - 1] == s2[j - 1]) 0 else 1
-                dp[i][j] = minOf(
-                    dp[i - 1][j] + 1,
-                    dp[i][j - 1] + 1,
-                    dp[i - 1][j - 1] + cost
-                )
+        if (duration < 200) {
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                android.widget.Toast.makeText(context, "录入时间太短", android.widget.Toast.LENGTH_SHORT).show()
             }
-        }
-
-        return dp[m][n]
-    }
-
-    fun nextWord() {
-        val currentState = _uiState.value
-        val nextIndex = currentState.currentIndex + 1
-
-        if (nextIndex >= currentState.words.size) {
-            _uiState.value = currentState.copy(
-                isComplete = true,
-                currentWord = null
+            _uiState.value = _uiState.value.copy(
+                isRecording = false,
+                recordingDurationMs = 0,
+                recordingFilePath = null
             )
         } else {
-            _uiState.value = currentState.copy(
-                currentIndex = nextIndex,
-                currentWord = currentState.words[nextIndex],
-                recognizedText = "",
-                score = null
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                android.widget.Toast.makeText(context, "录音成功", android.widget.Toast.LENGTH_SHORT).show()
+            }
+            _uiState.value = _uiState.value.copy(
+                isRecording = false,
+                recordingDurationMs = duration
             )
         }
+    }
+
+    fun cancelRecording() {
+        timerJob?.cancel()
+        try {
+            voiceRecordingManager.stopRecording()
+        } catch (e: Exception) {
+            android.util.Log.e("PronunciationVM", "cancelRecording exception: ${e.message}", e)
+        }
+        
+        android.os.Handler(android.os.Looper.getMainLooper()).post {
+            android.widget.Toast.makeText(context, "已取消录音", android.widget.Toast.LENGTH_SHORT).show()
+        }
+        
+        _uiState.value = _uiState.value.copy(
+            isRecording = false,
+            recordingFilePath = null,
+            recordingDurationMs = 0
+        )
+        recordingStartTime = 0
     }
 
     fun restart() {
-        completedScores.clear()
         _uiState.value = PronunciationUiState(isLoading = true)
-        loadWords()
+        loadAllWords()
     }
 
     fun clearError() {
@@ -299,7 +255,7 @@ class PronunciationViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        stopSpeechRecognition()
         voiceRecordingManager.release()
+        mediaPlayer?.release()
     }
 }
