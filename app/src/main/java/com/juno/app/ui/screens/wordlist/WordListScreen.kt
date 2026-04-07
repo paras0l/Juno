@@ -3,6 +3,7 @@ package com.juno.app.ui.screens.wordlist
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,7 @@ fun WordListScreen(
     onNavigateToAddWord: () -> Unit,
     onNavigateToEditWord: (Long) -> Unit,
     onNavigateToGptImport: () -> Unit,
+    onNavigateToWordDetail: (Long) -> Unit,
     viewModel: WordListViewModel = hiltViewModel()
 ) {
     val words by viewModel.words.collectAsState()
@@ -228,6 +230,7 @@ fun WordListScreen(
                         ) { word ->
                             WordListItem(
                                 word = word,
+                                onClick = { onNavigateToWordDetail(word.id) },
                                 onEdit = if (!isFilteredMode) {{ onNavigateToEditWord(word.id) }} else null,
                                 onDelete = if (!isFilteredMode) {{ viewModel.showDeleteConfirmation(word) }} else null
                             )
@@ -285,11 +288,14 @@ fun WordListScreen(
 @Composable
 private fun WordListItem(
     word: WordEntity,
+    onClick: (() -> Unit)? = null,
     onEdit: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = onClick != null, onClick = { onClick?.invoke() }),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface

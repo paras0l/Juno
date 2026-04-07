@@ -100,6 +100,9 @@ fun JunoNavHost(
                 },
                 onNavigateToGptImport = {
                     navController.navigate(Screen.GptImport.route)
+                },
+                onNavigateToWordDetail = { wordId ->
+                    navController.navigate(Screen.GptWordDetail.createRoute(wordId))
                 }
             )
         }
