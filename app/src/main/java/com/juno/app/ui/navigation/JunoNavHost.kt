@@ -25,6 +25,8 @@ import com.juno.app.ui.screens.story.StoryScreen
 import com.juno.app.ui.screens.tutor.TutorSelectionScreen
 import com.juno.app.ui.screens.wordlist.WordListScreen
 import com.juno.app.ui.screens.ocr.OcrHistoryScreen
+import com.juno.app.ui.screens.gptimport.GptImportScreen
+import com.juno.app.ui.screens.gptworddetail.GptWordDetailScreen
 
 @Composable
 fun JunoNavHost(
@@ -95,6 +97,9 @@ fun JunoNavHost(
                 onNavigateToAddWord = { navController.navigate(Screen.AddWord.route) },
                 onNavigateToEditWord = { wordId ->
                     navController.navigate(Screen.EditWord.createRoute(wordId))
+                },
+                onNavigateToGptImport = {
+                    navController.navigate(Screen.GptImport.route)
                 }
             )
         }
@@ -209,6 +214,24 @@ fun JunoNavHost(
 
         composable(Screen.OcrHistory.route) {
             OcrHistoryScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.GptImport.route) {
+            GptImportScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onImportComplete = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Screen.GptWordDetail.route,
+            arguments = listOf(navArgument("wordId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val wordId = backStackEntry.arguments?.getLong("wordId") ?: return@composable
+            GptWordDetailScreen(
+                wordId = wordId,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

@@ -19,5 +19,6 @@ data class WordEntity(
     val lastStudiedDate: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val category: String? = null,
-    val tags: String? = null // Comma-separated tags
+    val tags: String? = null,
+    val gptContent: String? = null
 )

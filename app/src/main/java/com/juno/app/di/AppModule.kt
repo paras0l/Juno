@@ -43,11 +43,17 @@ object DatabaseModule {
             }
         }
 
-        return Room.databaseBuilder(
-            context,
-            JunoDatabase::class.java,
-            JunoDatabase.DATABASE_NAME
-        ).addMigrations(MIGRATION_1_2).build()
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE words ADD COLUMN gptContent TEXT")
+            }
+        }
+
+    return Room.databaseBuilder(
+        context,
+        JunoDatabase::class.java,
+        JunoDatabase.DATABASE_NAME
+    ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
     }
 
     @Provides

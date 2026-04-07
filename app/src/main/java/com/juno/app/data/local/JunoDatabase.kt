@@ -18,7 +18,7 @@ import com.juno.app.data.local.entity.WordEntity
         UserProgressEntity::class,
         StoryEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class JunoDatabase : RoomDatabase() {

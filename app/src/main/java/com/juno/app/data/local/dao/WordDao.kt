@@ -87,4 +87,7 @@ interface WordDao {
 
     @Query("DELETE FROM words")
     suspend fun deleteAllWords()
+
+    @Query("SELECT * FROM words WHERE id = :id AND gptContent IS NOT NULL LIMIT 1")
+    suspend fun getWordWithGptContent(id: Long): WordEntity?
 }

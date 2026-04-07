@@ -33,4 +33,8 @@ sealed class Screen(val route: String) {
     data object FocusMode : Screen("focus_mode")
     data object PermissionGuide : Screen("permission_guide")
     data object OcrHistory : Screen("ocr_history")
+    data object GptImport : Screen("gpt_import")
+    data object GptWordDetail : Screen("gpt_word_detail/{wordId}") {
+        fun createRoute(wordId: Long) = "gpt_word_detail/$wordId"
+    }
 }

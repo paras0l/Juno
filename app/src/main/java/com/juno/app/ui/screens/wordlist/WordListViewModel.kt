@@ -175,6 +175,28 @@ class WordListViewModel @Inject constructor(
         _importResult.value = null
     }
 
+    private val _showImportDialog = MutableStateFlow(false)
+    val showImportDialog: StateFlow<Boolean> = _showImportDialog.asStateFlow()
+
+    private val _navigateToGptImport = MutableStateFlow(false)
+    val navigateToGptImport: StateFlow<Boolean> = _navigateToGptImport.asStateFlow()
+
+    fun showImportDialog() {
+        _showImportDialog.value = true
+    }
+
+    fun dismissImportDialog() {
+        _showImportDialog.value = false
+    }
+
+    fun onNavigateToGptImport() {
+        _navigateToGptImport.value = true
+    }
+
+    fun onGptImportNavigated() {
+        _navigateToGptImport.value = false
+    }
+
     fun exportWords(context: android.content.Context, words: List<WordEntity>) {
         viewModelScope.launch {
             try {

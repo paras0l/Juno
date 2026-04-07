@@ -64,6 +64,7 @@ fun WordListScreen(
     onNavigateBack: () -> Unit,
     onNavigateToAddWord: () -> Unit,
     onNavigateToEditWord: (Long) -> Unit,
+    onNavigateToGptImport: () -> Unit,
     viewModel: WordListViewModel = hiltViewModel()
 ) {
     val words by viewModel.words.collectAsState()
@@ -73,6 +74,8 @@ fun WordListScreen(
     val wordToDelete by viewModel.wordToDelete.collectAsState()
     val isImporting by viewModel.isImporting.collectAsState()
     val importResult by viewModel.importResult.collectAsState()
+    val showImportDialog by viewModel.showImportDialog.collectAsState()
+    val navigateToGptImport by viewModel.navigateToGptImport.collectAsState()
 
     val isFilteredMode = viewModel.filter.isNotEmpty()
     val context = LocalContext.current
@@ -89,6 +92,13 @@ fun WordListScreen(
         importResult?.let { result ->
             snackbarHostState.showSnackbar(result.message)
             viewModel.clearImportResult()
+        }
+    }
+
+    LaunchedEffect(navigateToGptImport) {
+        if (navigateToGptImport) {
+            onNavigateToGptImport()
+            viewModel.onGptImportNavigated()
         }
     }
 
@@ -132,14 +142,7 @@ fun WordListScreen(
                     } else {
                         // Import button for normal mode
                         IconButton(
-                            onClick = {
-                                excelPickerLauncher.launch(
-                                    arrayOf(
-                                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                        "application/vnd.ms-excel"
-                                    )
-                                )
-                            },
+                            onClick = { viewModel.showImportDialog() },
                             enabled = !isImporting
                         ) {
                             if (isImporting) {
@@ -150,7 +153,7 @@ fun WordListScreen(
                             } else {
                                 Icon(
                                     imageVector = Icons.Default.FileUpload,
-                                    contentDescription = "导入Excel"
+                                    contentDescription = "导入"
                                 )
                             }
                         }
@@ -255,6 +258,25 @@ fun WordListScreen(
                 ) {
                     Text("取消")
                 }
+            }
+        )
+    }
+
+    if (showImportDialog) {
+        ImportTypeDialog(
+            onDismiss = { viewModel.dismissImportDialog() },
+            onExcelImport = {
+                viewModel.dismissImportDialog()
+                excelPickerLauncher.launch(
+                    arrayOf(
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "application/vnd.ms-excel"
+                    )
+                )
+            },
+            onGptImport = {
+                viewModel.dismissImportDialog()
+                onNavigateToGptImport()
             }
         )
     }
@@ -448,4 +470,37 @@ private fun FilteredEmptyState(filter: String) {
             )
         }
     }
+}
+
+@Composable
+private fun ImportTypeDialog(
+    onDismiss: () -> Unit,
+    onExcelImport: () -> Unit,
+    onGptImport: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("选择导入方式") },
+        text = {
+            Column {
+                TextButton(
+                    onClick = onExcelImport,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("从 Excel 文件导入")
+                }
+                TextButton(
+                    onClick = onGptImport,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("从 GPT 词库导入 (8,714 条)")
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("取消")
+            }
+        }
+    )
 }
