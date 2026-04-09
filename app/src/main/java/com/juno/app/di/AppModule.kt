@@ -5,9 +5,13 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.juno.app.data.local.AudioPlaybackManager
+import com.juno.app.data.local.GrammarDataInitializer
 import com.juno.app.data.local.JunoDatabase
 import com.juno.app.data.local.PreferencesManager
 import com.juno.app.data.local.VoiceRecordingManager
+import com.juno.app.data.local.dao.GrammarLessonDao
+import com.juno.app.data.local.dao.GrammarProgressDao
+import com.juno.app.data.local.dao.GrammarStageDao
 import com.juno.app.data.local.dao.ReviewDao
 import com.juno.app.data.local.dao.StoryDao
 import com.juno.app.data.local.dao.UserProgressDao
@@ -49,11 +53,51 @@ object DatabaseModule {
             }
         }
 
-    return Room.databaseBuilder(
-        context,
-        JunoDatabase::class.java,
-        JunoDatabase.DATABASE_NAME
-    ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS grammar_stages (
+                        id INTEGER NOT NULL PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        level TEXT NOT NULL,
+                        `order` INTEGER NOT NULL,
+                        totalLessons INTEGER NOT NULL,
+                        completedLessons INTEGER NOT NULL,
+                        isUnlocked INTEGER NOT NULL,
+                        completedAt INTEGER
+                    )
+                """.trimIndent())
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS grammar_lessons (
+                        id INTEGER NOT NULL PRIMARY KEY,
+                        stageId INTEGER NOT NULL,
+                        title TEXT NOT NULL,
+                        `order` INTEGER NOT NULL,
+                        content TEXT NOT NULL,
+                        examples TEXT NOT NULL,
+                        exercises TEXT NOT NULL,
+                        isCompleted INTEGER NOT NULL DEFAULT 0,
+                        correctRate REAL NOT NULL DEFAULT 0.0,
+                        lastPracticedAt INTEGER
+                    )
+                """.trimIndent())
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS grammar_progress (
+                        id INTEGER NOT NULL PRIMARY KEY,
+                        currentStageId INTEGER NOT NULL,
+                        currentLessonId INTEGER NOT NULL,
+                        totalStudyTime INTEGER NOT NULL DEFAULT 0,
+                        lastStudyDate INTEGER NOT NULL
+                    )
+                """.trimIndent())
+            }
+        }
+
+        return Room.databaseBuilder(
+            context,
+            JunoDatabase::class.java,
+            JunoDatabase.DATABASE_NAME
+        ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
     }
 
     @Provides
@@ -78,6 +122,34 @@ object DatabaseModule {
     @Singleton
     fun provideStoryDao(database: JunoDatabase): StoryDao {
         return database.storyDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGrammarStageDao(database: JunoDatabase): GrammarStageDao {
+        return database.grammarStageDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGrammarLessonDao(database: JunoDatabase): GrammarLessonDao {
+        return database.grammarLessonDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGrammarProgressDao(database: JunoDatabase): GrammarProgressDao {
+        return database.grammarProgressDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGrammarDataInitializer(
+        @ApplicationContext context: Context,
+        grammarStageDao: GrammarStageDao,
+        grammarLessonDao: GrammarLessonDao
+    ): GrammarDataInitializer {
+        return GrammarDataInitializer(context, grammarStageDao, grammarLessonDao)
     }
 
     @Provides

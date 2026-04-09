@@ -4,11 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Dashboard
-import androidx.compose.material.icons.outlined.Style
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -19,20 +18,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.juno.app.ui.screens.dashboard.DashboardScreen
-import com.juno.app.ui.screens.flashcard.FlashcardScreen
 import com.juno.app.ui.screens.ai.AiScreen
+import com.juno.app.ui.screens.dashboard.DashboardScreen
+import com.juno.app.ui.screens.study.StudyScreen
 
 @Composable
 fun MainScreen(
-
     onNavigateToReview: () -> Unit,
     onNavigateToStory: () -> Unit,
     onNavigateToWordList: () -> Unit,
@@ -43,7 +39,9 @@ fun MainScreen(
     onNavigateToLearnedWords: () -> Unit,
     onNavigateToMasteredWords: () -> Unit,
     onNavigateToPronunciation: (String?) -> Unit,
-    onNavigateToOcrHistory: () -> Unit
+    onNavigateToOcrHistory: () -> Unit,
+    onNavigateToFlashcard: () -> Unit,
+    onNavigateToGrammar: () -> Unit
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
@@ -51,22 +49,20 @@ fun MainScreen(
         bottomBar = {
             NavigationBar(
                 containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                tonalElevation = 0.dp, // Flat appearance
-                // Remove shadow for clean Morandi look
+                tonalElevation = 0.dp,
                 modifier = Modifier.background(MaterialTheme.colorScheme.background)
             ) {
-                // Flashcards (Home)
+                // 学习Tab（原"单词"Tab）
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
                     icon = {
                         Icon(
-                            imageVector = Icons.Outlined.Style,
-                            contentDescription = "背单词"
+                            imageVector = Icons.AutoMirrored.Outlined.MenuBook,
+                            contentDescription = "学习"
                         )
                     },
-                    // Label visually omitted if not selected for breathing room
-                    label = { if (selectedTab == 0) Text("单词") },
+                    label = { if (selectedTab == 0) Text("学习") },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
@@ -119,12 +115,9 @@ fun MainScreen(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             when (selectedTab) {
-                0 -> FlashcardScreen(
-                    onNavigateBack = { /* No-op here since it's the root */ },
-                    onNavigateToPronunciation = { word ->
-                        word?.let { onNavigateToPronunciation(it) }
-                    },
-                    onNavigateToWordList = onNavigateToWordList
+                0 -> StudyScreen(
+                    onNavigateToFlashcard = onNavigateToFlashcard,
+                    onNavigateToGrammar = onNavigateToGrammar
                 )
                 1 -> AiScreen(
                     onNavigateToTutorSelection = onNavigateToTutorSelection,

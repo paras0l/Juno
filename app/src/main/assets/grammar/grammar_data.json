@@ -1,0 +1,198 @@
+{
+  "stages": [
+    {
+      "id": 1,
+      "name": "第一阶段：构建句子骨架",
+      "level": "初级·入门",
+      "order": 1,
+      "totalLessons": 8,
+      "isUnlocked": true
+    },
+    {
+      "id": 2,
+      "name": "第二阶段：掌握时间与状态",
+      "level": "初级·核心",
+      "order": 2,
+      "totalLessons": 8,
+      "isUnlocked": false
+    },
+    {
+      "id": 3,
+      "name": "第三阶段：搭建复杂句子",
+      "level": "中级·过渡",
+      "order": 3,
+      "totalLessons": 8,
+      "isUnlocked": false
+    },
+    {
+      "id": 4,
+      "name": "第四阶段：深度理解被动与虚拟",
+      "level": "中级·进阶",
+      "order": 4,
+      "totalLessons": 8,
+      "isUnlocked": false
+    },
+    {
+      "id": 5,
+      "name": "第五阶段：精通名词性从句与定语从句",
+      "level": "高级·核心",
+      "order": 5,
+      "totalLessons": 8,
+      "isUnlocked": false
+    },
+    {
+      "id": 6,
+      "name": "第六阶段：高阶结构与特殊句式",
+      "level": "高级·拔尖",
+      "order": 6,
+      "totalLessons": 8,
+      "isUnlocked": false
+    }
+  ],
+  "lessons": [
+    {
+      "id": 101,
+      "stageId": 1,
+      "title": "句子基本结构",
+      "order": 1,
+      "content": "英语句子有五种基本句型：\n\n**1. 主语 + 谓语（SV）**\n不及物动词作谓语，后不需要宾语。\n例：The sun rises. / Birds fly.\n\n**2. 主语 + 谓语 + 宾语（SVO）**\n及物动词作谓语，需要宾语。\n例：She likes apples. / I read books.\n\n**3. 主语 + 谓语 + 间接宾语 + 直接宾语（SVOO）**\n双宾语动词，顺序为\"人+物\"。\n例：She gave me a book.\n\n**4. 主语 + 谓语 + 宾语 + 宾语补足语（SVOC）**\n宾补对宾语进行补充说明。\n例：We call him Tom.\n\n**5. 主语 + 系动词 + 表语（SVP）**\n系动词（be, become, look等）连接主语和表语。\n例：She is a teacher.\n\n**There be 句型**\nThere is/are + 名词 + 地点——表示\"某处有某物\"。\n例：There is a book on the table.",
+      "examples": "[{\"en\":\"The sun rises in the east.\",\"zh\":\"太阳从东方升起。\"},{\"en\":\"She gave me a beautiful gift.\",\"zh\":\"她给了我一份漂亮的礼物。\"},{\"en\":\"We call him Tom.\",\"zh\":\"我们叫他汤姆。\"},{\"en\":\"There are many students in the classroom.\",\"zh\":\"教室里有很多学生。\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"The children are playing in the park. 这是什么句型？\",\"options\":[\"主谓结构（SV）\",\"主谓宾结构（SVO）\",\"主谓双宾（SVOO）\",\"主谓宾补（SVOC）\"],\"answer\":0,\"explanation\":\"playing是不及物动词，in the park是地点状语，不是宾语，所以是主谓结构SV。\"},{\"id\":2,\"question\":\"My sister gave me a beautiful scarf. 这是什么句型？\",\"options\":[\"主谓结构（SV）\",\"主谓宾结构（SVO）\",\"主谓双宾（SVOO）\",\"主谓宾补（SVOC）\"],\"answer\":2,\"explanation\":\"gave是双宾语动词，me是间接宾语（人），a beautiful scarf是直接宾语（物）。\"},{\"id\":3,\"question\":\"We keep the door open every day. 这是什么句型？\",\"options\":[\"主谓宾结构（SVO）\",\"主系表结构（SVP）\",\"主谓宾补（SVOC）\",\"主谓双宾（SVOO）\"],\"answer\":2,\"explanation\":\"open是宾语补足语，对宾语the door进行补充说明。\"},{\"id\":4,\"question\":\"The moon looks very bright tonight. 这是什么句型？\",\"options\":[\"主谓结构（SV）\",\"主谓宾结构（SVO）\",\"主谓双宾（SVOO）\",\"主系表结构（SVP）\"],\"answer\":3,\"explanation\":\"looks是系动词，bright是表语，构成主系表结构。\"},{\"id\":5,\"question\":\"There ___ a cup of tea on the table.\",\"options\":[\"is\",\"are\",\"be\",\"have\"],\"answer\":0,\"explanation\":\"a cup of tea是单数，用is。There be句型中be动词与最近的主语一致。\"}]"
+    },
+    {
+      "id": 102,
+      "stageId": 1,
+      "title": "八大词性概览",
+      "order": 2,
+      "content": "英语有八大词性，每种词性在句子中承担不同角色：\n\n| 词性 | 缩写 | 作用 | 例子 |\n|------|------|------|------|\n| **名词** | n. | 表示人或事物的名称 | book, student |\n| **动词** | v. | 表示动作或状态 | run, be, think |\n| **形容词** | adj. | 描述名词的性质 | happy, tall |\n| **副词** | adv. | 修饰动词/形容词 | quickly, very |\n| **代词** | pron. | 代替名词 | I, he, this |\n| **介词** | prep. | 表示关系 | in, on, at |\n| **连词** | conj. | 连接词或句子 | and, but |\n| **感叹词** | interj. | 表达情感 | oh, wow |\n\n**重要提示**：同一个词在不同语境可能有不同词性。\n例：water（名词：水）→ water the plants（动词：浇水）",
+      "examples": "[{\"en\":\"The teacher is very kind.\",\"zh\":\"这位老师非常和蔼。（n. + adj.）\"},{\"en\":\"She studies hard every day.\",\"zh\":\"她每天努力学习。（v. + adv.）\"},{\"en\":\"I go to school by bus.\",\"zh\":\"我坐公共汽车去上学。（prep.）\"},{\"en\":\"Wow, that's amazing!\",\"zh\":\"哇，那太惊人了！（interj.）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"quickly 是什么词性？\",\"options\":[\"名词\",\"动词\",\"形容词\",\"副词\"],\"answer\":3,\"explanation\":\"quickly以-ly结尾，是副词，修饰动词或形容词。\"},{\"id\":2,\"question\":\"because 是什么词性？\",\"options\":[\"介词\",\"连词\",\"代词\",\"副词\"],\"answer\":1,\"explanation\":\"because是从属连词，引导原因状语从句。\"},{\"id\":3,\"question\":\"She speaks English ___ (good/well).\",\"options\":[\"good（形容词）\",\"well（副词）\",\"两者都可以\",\"都不对\"],\"answer\":1,\"explanation\":\"修饰动词speaks，需要用副词well，而不是形容词good。\"},{\"id\":4,\"question\":\"in、on、at 属于哪种词性？\",\"options\":[\"代词\",\"连词\",\"介词\",\"副词\"],\"answer\":2,\"explanation\":\"in、on、at都是介词，用于表示时间、地点等关系。\"},{\"id\":5,\"question\":\"下列哪个词是代词？\",\"options\":[\"beautiful\",\"quickly\",\"this\",\"and\"],\"answer\":2,\"explanation\":\"this是指示代词，代替名词或用于指示距离近的人或物。\"}]"
+    },
+    {
+      "id": 103,
+      "stageId": 1,
+      "title": "名词详解",
+      "order": 3,
+      "content": "**名词（Noun）**是表示人、地点、事物或抽象概念的词。\n\n**一、名词分类**\n\n1. **可数名词**：有单复数形式\n   - 规则变化：book→books, class→classes, baby→babies\n   - 不规则变化：man→men, child→children, tooth→teeth\n\n2. **不可数名词**：没有复数形式\n   - 物质名词：water, air, gold\n   - 抽象名词：love, happiness, information\n\n**二、名词的格**\n- 所有格（'s）：表示拥有关系\n  - Tom's book（汤姆的书）\n  - the students' books（学生们的书）\n\n**三、名词在句中的作用**\n- 作主语：**The dog** barked.\n- 作宾语：She loves **music**.\n- 作表语：He is a **doctor**.\n- 作定语：a **gold** ring",
+      "examples": "[{\"en\":\"The children are playing in the garden.\",\"zh\":\"孩子们在花园里玩耍。（children是不规则复数）\"},{\"en\":\"Tom's car is very expensive.\",\"zh\":\"汤姆的车非常贵。（所有格's）\"},{\"en\":\"I need some information about the trip.\",\"zh\":\"我需要一些关于这次旅行的信息。（information不可数）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"下列哪个是不可数名词？\",\"options\":[\"book\",\"water\",\"apple\",\"student\"],\"answer\":1,\"explanation\":\"water是物质名词，属于不可数名词，没有复数形式。\"},{\"id\":2,\"question\":\"child 的复数形式是？\",\"options\":[\"childs\",\"childes\",\"children\",\"childrens\"],\"answer\":2,\"explanation\":\"child是不规则名词，复数为children，不能加-s。\"},{\"id\":3,\"question\":\"'the students' books' 表示什么意思？\",\"options\":[\"一个学生的书\",\"学生们的书\",\"一本书\",\"书的学生\"],\"answer\":1,\"explanation\":\"students'是名词复数所有格，撇号加在s后面，表示多个学生的所有物。\"},{\"id\":4,\"question\":\"下列哪项中名词作定语？\",\"options\":[\"She is a teacher.\",\"I love music.\",\"a gold ring\",\"The dog barked.\"],\"answer\":2,\"explanation\":\"在a gold ring中，gold是名词作定语，修饰名词ring。\"},{\"id\":5,\"question\":\"下列哪个词既是可数名词又是动词？\",\"options\":[\"water\",\"study\",\"beautiful\",\"quickly\"],\"answer\":1,\"explanation\":\"study作名词时意为'研究、学习'（可数），作动词时意为'学习、研究'。\"}]"
+    },
+    {
+      "id": 104,
+      "stageId": 1,
+      "title": "代词",
+      "order": 4,
+      "content": "**代词（Pronoun）**是代替名词或名词短语的词。\n\n**一、人称代词**\n| | 主格 | 宾格 | 形容词性物主代词 | 名词性物主代词 |\n|--|------|------|-----------------|---------------|\n| 我 | I | me | my | mine |\n| 你 | you | you | your | yours |\n| 他 | he | him | his | his |\n| 她 | she | her | her | hers |\n| 它 | it | it | its | its |\n| 我们 | we | us | our | ours |\n| 他们 | they | them | their | theirs |\n\n**二、反身代词**：myself, yourself, himself, herself, itself, ourselves, themselves\n- 用法：I hurt **myself**.（作宾语）\n- 强调用法：He **himself** did it.（强调主语）\n\n**三、指示代词**：this（这个）, that（那个）, these（这些）, those（那些）\n\n**四、疑问代词**：who（谁）, what（什么）, which（哪个）, whose（谁的）",
+      "examples": "[{\"en\":\"She gave him her book, but he lost it.\",\"zh\":\"她把她的书给了他，但他把它弄丢了。\"},{\"en\":\"This is my bag; that one is yours.\",\"zh\":\"这是我的包；那个是你的。\"},{\"en\":\"He himself solved the problem.\",\"zh\":\"他亲自解决了这个问题。（反身代词强调）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"___ is my best friend.（选择正确代词）\",\"options\":[\"Him\",\"Her\",\"She\",\"Them\"],\"answer\":2,\"explanation\":\"作主语应用主格代词，She是主格，表示'她'。\"},{\"id\":2,\"question\":\"I hurt ___ when I fell.（选择正确反身代词）\",\"options\":[\"me\",\"my\",\"myself\",\"mine\"],\"answer\":2,\"explanation\":\"hurt的宾语和主语是同一人，应用反身代词myself。\"},{\"id\":3,\"question\":\"This book is ___, not yours.（填入名词性物主代词）\",\"options\":[\"my\",\"me\",\"mine\",\"I\"],\"answer\":2,\"explanation\":\"mine是名词性物主代词，相当于'my book'，可独立使用。\"},{\"id\":4,\"question\":\"___ is your name?\",\"options\":[\"Who\",\"What\",\"Which\",\"Whose\"],\"answer\":1,\"explanation\":\"询问名字用What，what is your name = 你叫什么名字。\"},{\"id\":5,\"question\":\"___ students are in the classroom?（指示代词）\",\"options\":[\"This\",\"That\",\"These\",\"It\"],\"answer\":2,\"explanation\":\"students是复数，应用these（复数指示代词），表示'这些'。\"}]"
+    },
+    {
+      "id": 105,
+      "stageId": 1,
+      "title": "冠词",
+      "order": 5,
+      "content": "**冠词（Article）**分为不定冠词和定冠词。\n\n**一、不定冠词 a / an**\n- **a**：用在以辅音音素开头的词前\n  - a book, a university（u发/ju/音）\n- **an**：用在以元音音素开头的词前\n  - an apple, an hour（h不发音）\n\n**不定冠词用法：**\n1. 初次提到的人或事物：**A** dog is following me.\n2. 表示类别：**A** cat has four legs.\n3. 表示数量\"一个\"：**A** week has seven days.\n\n**二、定冠词 the**\n- 再次提到的事物：I saw a dog. **The** dog was black.\n- 独一无二的事物：**the** sun, **the** moon, **the** earth\n- 乐器前：play **the** piano\n- 序数词前：**the** first\n- 最高级前：**the** best\n\n**三、零冠词（不用冠词）**\n- 专有名词：China, Tom\n- 不可数名词泛指：I like music.\n- 星期、月份：on Monday, in January",
+      "examples": "[{\"en\":\"I saw an honest man. He is the man I told you about.\",\"zh\":\"我看到了一个诚实的人。他就是我告诉你的那个人。\"},{\"en\":\"She plays the piano every morning.\",\"zh\":\"她每天早上弹钢琴。（乐器前用the）\"},{\"en\":\"The sun rises in the east.\",\"zh\":\"太阳从东方升起。（独一无二的事物用the）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"___ university has a great reputation.\",\"options\":[\"A\",\"An\",\"The\",\"不填\"],\"answer\":0,\"explanation\":\"university首字母u发/juː/辅音音素，所以用a而非an。\"},{\"id\":2,\"question\":\"___ hour passed quickly.\",\"options\":[\"A\",\"An\",\"The\",\"不填\"],\"answer\":1,\"explanation\":\"hour中h不发音，以元音音素/aʊ/开头，所以用an。\"},{\"id\":3,\"question\":\"I like ___ music. 此处冠词应该是？\",\"options\":[\"a\",\"an\",\"the\",\"不填（零冠词）\"],\"answer\":3,\"explanation\":\"music是不可数名词表示泛指，不需要冠词。\"},{\"id\":4,\"question\":\"She is ___ best student in our class.\",\"options\":[\"a\",\"an\",\"the\",\"不填\"],\"answer\":2,\"explanation\":\"最高级前要用定冠词the。\"},{\"id\":5,\"question\":\"He plays ___ guitar every evening.\",\"options\":[\"a\",\"an\",\"the\",\"不填\"],\"answer\":2,\"explanation\":\"乐器名词前要用定冠词the，这是固定用法。\"}]"
+    },
+    {
+      "id": 106,
+      "stageId": 1,
+      "title": "数词",
+      "order": 6,
+      "content": "**数词（Numeral）**分为基数词和序数词。\n\n**一、基数词（Cardinal Numbers）**\n表示数量多少：one, two, three...twenty, thirty...hundred, thousand, million\n\n规律：\n- 13-19：thirteen, fourteen...nineteen\n- 整十：twenty, thirty, forty, fifty, sixty, seventy, eighty, ninety\n- 21-99：twenty-one, thirty-five（用连字符）\n- 101：one hundred and one\n\n**二、序数词（Ordinal Numbers）**\n表示顺序：first, second, third, fourth...twentieth\n\n规律：\n- 1st→first, 2nd→second, 3rd→third\n- 4th以后：加-th（fourth, fifth...）\n- 特殊：fifth, eighth, ninth, twelfth, twentieth\n\n**三、数词用法**\n- 年份：nineteen ninety-five（1995）\n- 时间：eight fifteen（8:15）\n- 分数：one third（1/3），three quarters（3/4）\n- 百分比：thirty percent（30%）",
+      "examples": "[{\"en\":\"There are twenty-five students in our class.\",\"zh\":\"我们班有二十五个学生。\"},{\"en\":\"He came in third in the race.\",\"zh\":\"他在比赛中获得第三名。\"},{\"en\":\"Two thirds of the work is done.\",\"zh\":\"三分之二的工作已经完成。（分数）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"45 的英文写法？\",\"options\":[\"forty five\",\"forty-five\",\"fourty-five\",\"fortyfive\"],\"answer\":1,\"explanation\":\"21-99的两位数要用连字符连接，且forty不是fourty（注意拼写）。\"},{\"id\":2,\"question\":\"第12 的序数词是？\",\"options\":[\"twelveth\",\"twelfth\",\"twelvth\",\"twelfeth\"],\"answer\":1,\"explanation\":\"twelve的序数词是twelfth，注意ve变f，然后加th。\"},{\"id\":3,\"question\":\"1/3 的英文表达是？\",\"options\":[\"one three\",\"first third\",\"one third\",\"one thirds\"],\"answer\":2,\"explanation\":\"分数表达：分子用基数词，分母用序数词。分子大于1时分母加s：two thirds。\"},{\"id\":4,\"question\":\"1995年的英文读法？\",\"options\":[\"one thousand nine hundred ninety-five\",\"nineteen ninety-five\",\"one nine nine five\",\"nineteen hundred ninety-five\"],\"answer\":1,\"explanation\":\"年份通常分两组读：1995→nineteen ninety-five。\"},{\"id\":5,\"question\":\"下列哪个序数词拼写正确？\",\"options\":[\"nineth\",\"eightth\",\"fiftieth\",\"twentyth\"],\"answer\":2,\"explanation\":\"fiftieth是fifty的序数词（fifty→fifti+eth）。ninth=nine去e+th，eighth=eight+h，twentieth=twenty→twentie+th。\"}]"
+    },
+    {
+      "id": 107,
+      "stageId": 1,
+      "title": "介词（初阶）",
+      "order": 7,
+      "content": "**介词（Preposition）**表示名词与其他词的关系，不能单独使用，后面必须跟名词或代词（介词宾语）。\n\n**一、时间介词**\n| 介词 | 用法 | 例子 |\n|------|------|------|\n| **at** | 具体时间点 | at 8 o'clock, at noon |\n| **on** | 具体某天/星期 | on Monday, on July 4th |\n| **in** | 年/月/季节/一天中 | in 2024, in July, in the morning |\n\n**二、地点介词**\n- **at**：具体地点（at school, at the bus stop）\n- **in**：封闭空间内（in the box, in Beijing）\n- **on**：表面上（on the table, on the wall）\n\n**三、方向介词**\n- **to**：朝向（go to school）\n- **into**：进入（walk into the room）\n- **out of**：出去（come out of the house）\n\n**四、其他常用介词**\n- with（和/用）：come with me; write with a pen\n- for（为了/持续时间）：study for the exam; for two hours\n- by（通过/用）：go by bus; finished by Monday",
+      "examples": "[{\"en\":\"I wake up at 7 o'clock in the morning.\",\"zh\":\"我早上7点醒来。（at+时间点，in+一天某部分）\"},{\"en\":\"The book is on the desk in my room.\",\"zh\":\"书在我房间的桌子上。（on表面，in封闭空间）\"},{\"en\":\"She travels to work by subway every day.\",\"zh\":\"她每天坐地铁去上班。（by+交通工具）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"I have class ___ Monday morning.\",\"options\":[\"at\",\"on\",\"in\",\"by\"],\"answer\":1,\"explanation\":\"具体某天（Monday）用on，星期几或具体日期前用on。\"},{\"id\":2,\"question\":\"She was born ___ 1999.\",\"options\":[\"at\",\"on\",\"in\",\"by\"],\"answer\":2,\"explanation\":\"年份前用in：in 1999。月份前也用in：in July。\"},{\"id\":3,\"question\":\"The cat is ___ the box.（猫在箱子里）\",\"options\":[\"on\",\"at\",\"in\",\"to\"],\"answer\":2,\"explanation\":\"in表示在封闭空间内部，猫在箱子里用in the box。\"},{\"id\":4,\"question\":\"We go to school ___ bus.\",\"options\":[\"with\",\"on\",\"by\",\"in\"],\"answer\":2,\"explanation\":\"乘坐交通工具用by：by bus, by car, by subway（注意不加冠词）。\"},{\"id\":5,\"question\":\"I studied English ___ two hours.\",\"options\":[\"during\",\"for\",\"since\",\"at\"],\"answer\":1,\"explanation\":\"for表示持续一段时间：for two hours（持续两小时）。\"}]"
+    },
+    {
+      "id": 108,
+      "stageId": 1,
+      "title": "英语发音规律",
+      "order": 8,
+      "content": "掌握英语发音规律，有助于见词能读、听音能写。\n\n**一、元音字母在单词中的发音规律**\n\n1. **开音节**（辅音+元音 或 元音+辅音+e）\n   - 元音发字母本音：cake /eɪ/, bike /aɪ/, note /oʊ/\n\n2. **闭音节**（辅音+元音+辅音，末尾无e）\n   - 元音发短音：cap /æ/, sit /ɪ/, hot /ɒ/\n\n**二、常见字母组合发音**\n| 字母组合 | 发音 | 例词 |\n|----------|------|------|\n| ea | /iː/ | tea, read, eat |\n| ee | /iː/ | see, tree, meet |\n| oo | /uː/ 或 /ʊ/ | food /uː/, book /ʊ/ |\n| ou | /aʊ/ 或 /oʊ/ | out /aʊ/, soul /oʊ/ |\n| igh | /aɪ/ | night, light, right |\n| th | /θ/ 或 /ð/ | think /θ/, this /ð/ |\n\n**三、重音规律**\n- 双音节名词/形容词：重音在第一音节（PREsent, TAble）\n- 双音节动词：重音在第二音节（preSENT, reLAX）\n- 三音节以上：通常在倒数第三音节",
+      "examples": "[{\"en\":\"cake /keɪk/ vs. cap /kæp/\",\"zh\":\"开音节（长音a）vs 闭音节（短音a）\"},{\"en\":\"food /fuːd/ vs. book /bʊk/\",\"zh\":\"oo的两种发音：长音/uː/ vs 短音/ʊ/\"},{\"en\":\"REcord (n.) vs. reCORD (v.)\",\"zh\":\"同一个词，名词重音在前，动词重音在后\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"cake 中字母 a 的发音是？\",\"options\":[\"/æ/（短音）\",\"/eɪ/（长音）\",\"/ɑː/\",\"/ə/\"],\"answer\":1,\"explanation\":\"cake是开音节（辅音+元音+辅音e），元音a发字母本音/eɪ/。\"},{\"id\":2,\"question\":\"下列哪个词中 oo 发/ʊ/短音？\",\"options\":[\"food\",\"moon\",\"book\",\"cool\"],\"answer\":2,\"explanation\":\"book中的oo发短音/ʊ/。food, moon, cool中的oo发长音/uː/。\"},{\"id\":3,\"question\":\"night 中 igh 的发音是？\",\"options\":[\"/ɪɡ/\",\"/aɪ/\",\"/ɪ/\",\"/ɡ/\"],\"answer\":1,\"explanation\":\"igh是固定组合，发/aɪ/音：night, light, right, sight。\"},{\"id\":4,\"question\":\"以下哪组词重音位置相同？\",\"options\":[\"REcord (n.) / reCORD (v.)\",\"TAble / reLAX\",\"PREsent (n.) / OBject (n.)\",\"preSENT (v.) / proDUCE (v.)\"],\"answer\":2,\"explanation\":\"PREsent和OBject都是名词，重音在第一音节，位置相同。\"},{\"id\":5,\"question\":\"th 在 this 中发什么音？\",\"options\":[\"/t/\",\"/θ/（清音）\",\"/ð/（浊音）\",\"/s/\"],\"answer\":2,\"explanation\":\"this中th发浊音/ð/。表示概念、思考类词（think, thank）发清音/θ/；指示词（this, that, the）发浊音/ð/。\"}]"
+    },
+    {
+      "id": 201,
+      "stageId": 2,
+      "title": "一般现在时",
+      "order": 1,
+      "content": "**一般现在时（Simple Present Tense）**\n\n**一、用法**\n1. 表示经常性/习惯性动作：She **goes** to school every day.\n2. 表示客观真理：The earth **moves** around the sun.\n3. 表示目前状态：He **lives** in Beijing.\n4. 在时间/条件状语从句中代替将来时：When he **comes**, I'll tell him.\n\n**二、构成**\n- 一般情况：动词原形\n  - I/You/We/They + 动词原形：I **eat** rice.\n- 第三人称单数（he/she/it）：动词+s/es\n  - 一般加-s：reads, plays\n  - 以s/x/ch/sh/o结尾加-es：washes, goes\n  - 辅音字母+y结尾，y变i加-es：studies, flies\n\n**三、否定句和疑问句**\n- 否定：主语 + do/does + not + 动词原形\n  - She **doesn't** like coffee.\n- 疑问：Do/Does + 主语 + 动词原形?\n  - **Does** she like coffee?",
+      "examples": "[{\"en\":\"She teaches English at our school.\",\"zh\":\"她在我们学校教英语。（第三人称单数）\"},{\"en\":\"The sun rises in the east and sets in the west.\",\"zh\":\"太阳从东方升起，从西方落下。（客观真理）\"},{\"en\":\"If it rains tomorrow, we'll stay at home.\",\"zh\":\"如果明天下雨，我们就待在家里。（从句代替将来时）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"She ___ (study) very hard every day.\",\"options\":[\"study\",\"studies\",\"studys\",\"is studying\"],\"answer\":1,\"explanation\":\"she是第三人称单数，study末尾是辅音+y，变y为i加-es，所以是studies。\"},{\"id\":2,\"question\":\"They ___ (not/like) spicy food.\",\"options\":[\"doesn't like\",\"don't likes\",\"don't like\",\"not like\"],\"answer\":2,\"explanation\":\"they是复数，否定用don't + 动词原形：don't like。\"},{\"id\":3,\"question\":\"___ your brother play basketball?\",\"options\":[\"Do\",\"Does\",\"Is\",\"Are\"],\"answer\":1,\"explanation\":\"your brother是第三人称单数，疑问句用Does，后接动词原形play。\"},{\"id\":4,\"question\":\"水在100摄氏度沸腾。（选择正确时态）\",\"options\":[\"Water is boiling at 100°C.\",\"Water boils at 100°C.\",\"Water boiled at 100°C.\",\"Water will boil at 100°C.\"],\"answer\":1,\"explanation\":\"客观真理用一般现在时：Water boils at 100°C.\"},{\"id\":5,\"question\":\"The train ___ at 9 o'clock tomorrow morning.\",\"options\":[\"leaves\",\"will leave\",\"is leaving\",\"left\"],\"answer\":0,\"explanation\":\"固定时刻表、班次用一般现在时表示将来：The train leaves at 9.（也可用will leave，但leaves更正式）\"}]"
+    },
+    {
+      "id": 202,
+      "stageId": 2,
+      "title": "现在进行时",
+      "order": 2,
+      "content": "**现在进行时（Present Continuous Tense）**\n\n**一、用法**\n1. 表示现在正在进行的动作：She **is reading** now.\n2. 表示当前阶段持续的动作：He **is learning** Chinese these days.\n3. 表示计划好的将来动作：We **are leaving** tomorrow.\n4. 与always连用，表示抱怨：He **is always complaining**!\n\n**二、构成**\nam/is/are + 动词-ing\n\n**ing的构成规则：**\n- 一般加-ing：reading, playing\n- 以不发音的e结尾去e加-ing：make→making, write→writing\n- 以一个元音+一个辅音结尾的重读音节，双写辅音：run→running, sit→sitting\n\n**三、不能用进行时的动词（状态动词）**\n- 感知：see, hear, smell\n- 情感：love, hate, like\n- 思想：know, believe, think（某些情况）\n- 拥有：have, own, belong",
+      "examples": "[{\"en\":\"Look! The children are playing in the park.\",\"zh\":\"看！孩子们正在公园里玩。（正在进行）\"},{\"en\":\"I am meeting the president tomorrow.\",\"zh\":\"我明天要去见总统。（已安排好的将来）\"},{\"en\":\"He is always leaving his keys behind!\",\"zh\":\"他老是把钥匙落下！（与always连用表抱怨）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"Please be quiet. The baby ___ (sleep).\",\"options\":[\"sleeps\",\"is sleeping\",\"slept\",\"sleep\"],\"answer\":1,\"explanation\":\"现在正在进行的动作用现在进行时：is sleeping。\"},{\"id\":2,\"question\":\"swim 的-ing形式是？\",\"options\":[\"swiming\",\"swimwing\",\"swimming\",\"swimmming\"],\"answer\":2,\"explanation\":\"swim以一个元音+一个辅音(m)结尾，且是重读音节，双写辅音m：swimming。\"},{\"id\":3,\"question\":\"下列哪个句子用了错误的时态？\",\"options\":[\"She is reading a book now.\",\"I am knowing the answer.\",\"They are leaving next Monday.\",\"He is always forgetting things.\"],\"answer\":1,\"explanation\":\"know是状态动词，不能用进行时。应说：I know the answer.\"},{\"id\":4,\"question\":\"write 的-ing形式是？\",\"options\":[\"writeing\",\"writting\",\"writing\",\"writhing\"],\"answer\":2,\"explanation\":\"write以不发音的e结尾，去e直接加-ing：writing。\"},{\"id\":5,\"question\":\"We ___ dinner at a restaurant tonight.（已订好位）\",\"options\":[\"have\",\"will have\",\"are having\",\"had\"],\"answer\":2,\"explanation\":\"已安排好的将来活动可用现在进行时：are having（表示已计划好的事）。\"}]"
+    },
+    {
+      "id": 203,
+      "stageId": 2,
+      "title": "一般过去时",
+      "order": 3,
+      "content": "**一般过去时（Simple Past Tense）**\n\n**一、用法**\n1. 表示过去某时发生的动作：She **visited** Paris last year.\n2. 表示过去的状态：He **was** very happy.\n3. 表示过去的习惯性动作：I **played** tennis every weekend when I was young.\n\n**二、构成**\n**规则动词：动词+ed**\n- 一般加-ed：worked, played\n- 以e结尾加-d：liked, loved\n- 辅音+y结尾，y变i加-ed：studied, carried\n- 以重读音节辅音结尾，双写辅音加-ed：stopped, planned\n\n**不规则动词（部分）：**\n| 原形 | 过去式 | 原形 | 过去式 |\n|------|--------|------|--------|\n| go | went | come | came |\n| have | had | make | made |\n| say | said | get | got |\n| see | saw | give | gave |\n| take | took | buy | bought |\n\n**三、否定和疑问**\n- 否定：主语 + didn't + 动词原形\n- 疑问：Did + 主语 + 动词原形?",
+      "examples": "[{\"en\":\"She bought a new phone yesterday.\",\"zh\":\"她昨天买了一部新手机。（buy的不规则过去式bought）\"},{\"en\":\"Did you finish your homework last night?\",\"zh\":\"你昨晚完成作业了吗？（一般疑问句）\"},{\"en\":\"When I was young, I played football every day.\",\"zh\":\"当我年轻时，我每天踢足球。（过去的习惯）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"She ___ (study) English for 3 hours last night.\",\"options\":[\"study\",\"studies\",\"studied\",\"was studying\"],\"answer\":2,\"explanation\":\"过去发生的动作用一般过去时，study辅音+y，变y为i加-ed：studied。\"},{\"id\":2,\"question\":\"go 的过去式是？\",\"options\":[\"goed\",\"goes\",\"gone\",\"went\"],\"answer\":3,\"explanation\":\"go是不规则动词，过去式是went（完全不规则变化）。\"},{\"id\":3,\"question\":\"They ___ (not/come) to the party last night.\",\"options\":[\"didn't come\",\"don't come\",\"didn't came\",\"weren't come\"],\"answer\":0,\"explanation\":\"过去时否定用didn't + 动词原形：didn't come（注意不用过去式came）。\"},{\"id\":4,\"question\":\"stop 的过去式是？\",\"options\":[\"stoped\",\"stopped\",\"stopted\",\"stops\"],\"answer\":1,\"explanation\":\"stop以重读闭音节结尾（一个元音+一个辅音），双写p加-ed：stopped。\"},{\"id\":5,\"question\":\"___ you see Tom at the party?\",\"options\":[\"Do\",\"Did\",\"Were\",\"Have\"],\"answer\":1,\"explanation\":\"一般过去时疑问句用Did + 主语 + 动词原形：Did you see...？\"}]"
+    },
+    {
+      "id": 204,
+      "stageId": 2,
+      "title": "过去进行时",
+      "order": 4,
+      "content": "**过去进行时（Past Continuous Tense）**\n\n**一、用法**\n1. 表示过去某时正在进行的动作：At 8 last night, I **was watching** TV.\n2. 两个动作同时进行（较长动作+较短动作）：While she **was cooking**, he **came** in.\n3. 过去计划好要做的事：We **were leaving** the next day.\n\n**二、构成**\nwas/were + 动词-ing\n- I/He/She/It → was\n- You/We/They → were\n\n**三、与一般过去时对比**\n| 时态 | 强调 | 例子 |\n|------|------|------|\n| 一般过去时 | 动作完成了 | I **read** the book.（读完了）|\n| 过去进行时 | 动作进行中 | I **was reading** the book.（当时正在读）|\n\n**四、常用时间状语**\n- at + 具体时间 + last...: at 9 o'clock last night\n- when/while + 从句",
+      "examples": "[{\"en\":\"The phone rang while I was taking a shower.\",\"zh\":\"我洗澡时电话响了。（while引导的过去进行时）\"},{\"en\":\"At midnight, they were still working.\",\"zh\":\"半夜12点，他们还在工作。（过去某时点正在进行）\"},{\"en\":\"She was waiting for the bus when it started raining.\",\"zh\":\"她等公交时开始下雨了。（较长动作vs突然动作）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"At 7 last night, she ___ (cook) dinner.\",\"options\":[\"cooked\",\"cooks\",\"was cooking\",\"were cooking\"],\"answer\":2,\"explanation\":\"at 7 last night明确了过去某时间点，表示当时正在进行，she用was + cooking。\"},{\"id\":2,\"question\":\"While he ___ (sleep), the alarm went off.\",\"options\":[\"slept\",\"was sleeping\",\"were sleeping\",\"sleeps\"],\"answer\":1,\"explanation\":\"while引导较长的背景动作用过去进行时：was sleeping。go off是突然发生的动作用一般过去时。\"},{\"id\":3,\"question\":\"We ___ (play) football when it began to rain.\",\"options\":[\"played\",\"were playing\",\"was playing\",\"are playing\"],\"answer\":1,\"explanation\":\"we用were，后接动词-ing：were playing。began to rain是短暂动作，用一般过去时。\"},{\"id\":4,\"question\":\"I ___ (not/watch) TV at 9 last night; I was studying.\",\"options\":[\"didn't watch\",\"wasn't watching\",\"weren't watching\",\"don't watch\"],\"answer\":1,\"explanation\":\"过去进行时否定：was/were + not + -ing：wasn't watching。\"},{\"id\":5,\"question\":\"___ you sleeping when I called?\",\"options\":[\"Did\",\"Were\",\"Was\",\"Are\"],\"answer\":1,\"explanation\":\"过去进行时疑问句：Were/Was + 主语 + -ing？you用Were。\"}]"
+    },
+    {
+      "id": 205,
+      "stageId": 2,
+      "title": "一般将来时",
+      "order": 5,
+      "content": "**一般将来时（Simple Future Tense）**\n\n**一、will + 动词原形**\n1. 临时决定：I'll **help** you with that.\n2. 预测（无根据）：It **will** probably rain tomorrow.\n3. 承诺、意愿：I **won't** let you down.\n\n**二、be going to + 动词原形**\n1. 有迹象的预测：Look at those clouds. It's **going to** rain.\n2. 已有计划的将来：She's **going to** study abroad next year.\n\n**三、will vs. be going to**\n| | will | be going to |\n|-|------|-------------|\n| 预测 | 无证据，主观推测 | 有证据/根据 |\n| 计划 | 临时决定 | 事先计划好 |\n\n**四、其他表示将来的方式**\n- 现在进行时：I'm meeting him tonight.\n- 一般现在时：The train leaves at 9 tomorrow.\n- be about to：She **is about to** leave.（即将）",
+      "examples": "[{\"en\":\"A: Oh no, I've forgotten my wallet! B: Don't worry, I'll lend you some money.\",\"zh\":\"A：哦不，我忘带钱包了！B：别担心，我借你点钱。（临时决定用will）\"},{\"en\":\"I'm going to start a new diet next month. I've already planned it.\",\"zh\":\"我下个月打算开始新的饮食计划，我已经计划好了。（事先计划用going to）\"},{\"en\":\"Look at the sky! It's going to snow.\",\"zh\":\"看天空！要下雪了。（有证据的预测用going to）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"A: The phone is ringing! B: I ___ get it!（临时决定）\",\"options\":[\"am going to\",\"will\",\"go to\",\"am\"],\"answer\":1,\"explanation\":\"临时决定用will：I'll get it!（当场做出的决定用will，不用going to）。\"},{\"id\":2,\"question\":\"She ___ visit Paris next summer. She's already booked the flight.（事先计划）\",\"options\":[\"will\",\"is going to\",\"visits\",\"visited\"],\"answer\":1,\"explanation\":\"事先计划好的将来用be going to：is going to visit（已经订了机票，是计划好的）。\"},{\"id\":3,\"question\":\"Look at those dark clouds. It ___ rain.\",\"options\":[\"will\",\"is going to\",\"rains\",\"rained\"],\"answer\":1,\"explanation\":\"look at those dark clouds是有根据的预测，应用is going to rain。\"},{\"id\":4,\"question\":\"The concert ___ at 8 pm sharp tonight.（固定时刻表）\",\"options\":[\"will start\",\"starts\",\"is starting\",\"going to start\"],\"answer\":1,\"explanation\":\"固定时刻表用一般现在时表将来：starts at 8 pm。（注意，will start也较为常见）\"},{\"id\":5,\"question\":\"I promise I ___ (never/lie) to you again.\",\"options\":[\"will never lie\",\"am never going to lying\",\"never will lie\",\"am never lie\"],\"answer\":0,\"explanation\":\"承诺用will：will never lie。否定副词never放在will和动词原形之间。\"}]"
+    },
+    {
+      "id": 206,
+      "stageId": 2,
+      "title": "现在完成时",
+      "order": 6,
+      "content": "**现在完成时（Present Perfect Tense）**\n\n**一、构成**\nhave/has + 过去分词（P.P.）\n- I/You/We/They → **have** + P.P.\n- He/She/It → **has** + P.P.\n\n**二、用法**\n1. **过去发生，对现在有影响**：I **have lost** my key.（钥匙现在还没找到）\n2. **表经历**（用ever/never）：Have you **ever been** to Japan?\n3. **持续到现在**（with for/since）：She **has lived** here for 10 years.\n\n**三、与一般过去时对比**\n| 一般过去时 | 现在完成时 |\n|-----------|----------|\n| 强调过去发生 | 强调与现在的联系 |\n| 有明确过去时间 | 通常无明确过去时间 |\n| I **lost** my key yesterday. | I **have lost** my key.|\n\n**四、常用标志词**\n- 现在完成时：already, yet, ever, never, just, for, since\n- 一般过去时：yesterday, last week, ago, in 2020",
+      "examples": "[{\"en\":\"I have already finished my homework.\",\"zh\":\"我已经完成了作业。（already表示刚刚完成）\"},{\"en\":\"She has lived in London since 2015.\",\"zh\":\"她从2015年就一直住在伦敦。（since+时间点）\"},{\"en\":\"Have you ever tried sushi?\",\"zh\":\"你有没有尝过寿司？（经历询问）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"She ___ (just/finish) her assignment.\",\"options\":[\"just finished\",\"has just finished\",\"just has finished\",\"had just finished\"],\"answer\":1,\"explanation\":\"just与现在完成时连用：has just finished（刚刚完成，与现在有关联）。\"},{\"id\":2,\"question\":\"I ___ (never/see) such a beautiful sunset.\",\"options\":[\"never saw\",\"have never seen\",\"never has seen\",\"never seen\"],\"answer\":1,\"explanation\":\"never表示过去到现在的经历，用现在完成时：have never seen。\"},{\"id\":3,\"question\":\"He ___ in this company for 20 years.\",\"options\":[\"works\",\"worked\",\"has worked\",\"is working\"],\"answer\":2,\"explanation\":\"for + 时间段，表示从过去持续到现在，用现在完成时has worked。\"},{\"id\":4,\"question\":\"下列哪个句子用一般过去时更合适？\",\"options\":[\"I have seen that movie three times.\",\"I saw that movie last night.\",\"Have you ever been to France?\",\"She has just left.\"],\"answer\":1,\"explanation\":\"last night是明确的过去时间点，应用一般过去时saw，不用现在完成时。\"},{\"id\":5,\"question\":\"___ you ___ your keys yet?\",\"options\":[\"Did you find\",\"Have you found\",\"Do you find\",\"Were you finding\"],\"answer\":1,\"explanation\":\"yet用于现在完成时疑问句和否定句：Have you found...yet?（你找到...了吗？）\"}]"
+    },
+    {
+      "id": 207,
+      "stageId": 2,
+      "title": "动词的四大形式",
+      "order": 7,
+      "content": "**动词的四大形式**：原形、过去式、过去分词、现在分词\n\n**一、规则动词变化**\n| 原形 | 过去式 | 过去分词 | 现在分词 |\n|------|--------|---------|--------|\n| play | played | played | playing |\n| study | studied | studied | studying |\n| stop | stopped | stopped | stopping |\n| make | made | made | making |\n\n**二、不规则动词（常用）**\n| 原形 | 过去式 | 过去分词 |\n|------|--------|--------|\n| be | was/were | been |\n| have | had | had |\n| go | went | gone |\n| come | came | come |\n| see | saw | seen |\n| write | wrote | written |\n| speak | spoke | spoken |\n| take | took | taken |\n| buy | bought | bought |\n| know | knew | known |\n\n**三、各形式用法**\n- 原形：一般现在（非三单），助动词后\n- 过去式：一般过去时\n- 过去分词：完成时（have+P.P.）、被动语态（be+P.P.）\n- 现在分词：进行时（be+-ing）、分词作定语",
+      "examples": "[{\"en\":\"The letter was written by my teacher.\",\"zh\":\"这封信是我老师写的。（被动语态：was written）\"},{\"en\":\"She has spoken to the manager.\",\"zh\":\"她已经跟经理说过了。（现在完成时：has spoken）\"},{\"en\":\"The sleeping baby looks so cute.\",\"zh\":\"睡着的婴儿看起来很可爱。（现在分词作定语）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"see 的过去分词是？\",\"options\":[\"saw\",\"seeing\",\"seen\",\"seed\"],\"answer\":2,\"explanation\":\"see的三态是：see-saw-seen。过去分词seen用于完成时和被动语态。\"},{\"id\":2,\"question\":\"The book ___ (write) by Shakespeare.\",\"options\":[\"wrote\",\"is written\",\"was written\",\"has written\"],\"answer\":2,\"explanation\":\"被动语态（过去）：was + 过去分词，书是莎士比亚写的（过去事实），用was written。\"},{\"id\":3,\"question\":\"go 的现在分词是？\",\"options\":[\"goes\",\"went\",\"gone\",\"going\"],\"answer\":3,\"explanation\":\"go的现在分词是going（加-ing）。gone是过去分词，went是过去式。\"},{\"id\":4,\"question\":\"She has ___ all her money on clothes.\",\"options\":[\"spend\",\"spent\",\"spending\",\"spends\"],\"answer\":1,\"explanation\":\"has + 过去分词构成现在完成时：spend的过去分词是spent，所以has spent。\"},{\"id\":5,\"question\":\"下列哪个词的过去式和过去分词不同？\",\"options\":[\"buy\",\"play\",\"see\",\"stop\"],\"answer\":2,\"explanation\":\"see: saw(过去式) / seen(过去分词)，两者不同。buy: bought/bought; play: played/played; stop: stopped/stopped均相同。\"}]"
+    },
+    {
+      "id": 208,
+      "stageId": 2,
+      "title": "情态动词",
+      "order": 8,
+      "content": "**情态动词（Modal Verbs）**：can, could, may, might, must, should, will, would, shall, ought to\n\n**特点**：后接动词原形，没有人称和数的变化，没有第三人称单数-s。\n\n**一、can / could**\n- **能力**：She **can** swim.（她会游泳）\n- **请求**：**Could** you help me?（较礼貌）\n- **可能性**：It **could** rain.（可能会下雨）\n\n**二、may / might**\n- **允许**：**May** I come in?（我可以进来吗？）\n- **可能性**：She **might** be late.（她可能会迟到，把握较小）\n\n**三、must / have to**\n- **必须**：You **must** wear a seatbelt.（义务/规定）\n- **推断**：He **must** be tired.（肯定很累，强推断）\n- **have to**：外部义务：I **have to** go now.\n\n**四、should**\n- **建议/应该**：You **should** see a doctor.\n- **义务**：Students **should** respect their teachers.\n\n**五、would**\n- **过去的习惯**：We **would** walk to school when we were young.\n- **礼貌请求**：**Would** you like some tea?",
+      "examples": "[{\"en\":\"She can play three instruments.\",\"zh\":\"她会演奏三种乐器。（能力）\"},{\"en\":\"You must not park here.\",\"zh\":\"你不能在这里停车。（禁止）\"},{\"en\":\"You should eat more vegetables.\",\"zh\":\"你应该多吃蔬菜。（建议）\"}]",
+      "exercises": "[{\"id\":1,\"question\":\"___ I use your phone? (礼貌请求)\",\"options\":[\"Must\",\"Should\",\"May\",\"Will\"],\"answer\":2,\"explanation\":\"May I...?是礼貌地请求允许的固定用法。Could I...?也可以，但选项中没有。\"},{\"id\":2,\"question\":\"You ___ not smoke in this building.（禁止）\",\"options\":[\"can\",\"must\",\"should\",\"would\"],\"answer\":1,\"explanation\":\"must not表示禁止（强制性）：You must not smoke here.（don't have to表示不必要，不同于must not）\"},{\"id\":3,\"question\":\"She looks pale. She ___ be ill.\",\"options\":[\"can\",\"must\",\"should\",\"would\"],\"answer\":1,\"explanation\":\"must用于基于证据的强推断（她脸色苍白，肯定是病了）：She must be ill.\"},{\"id\":4,\"question\":\"You ___ see a doctor about that cough.（建议）\",\"options\":[\"must\",\"can\",\"should\",\"would\"],\"answer\":2,\"explanation\":\"should表示建议/应该：You should see a doctor.（语气比must温和）\"},{\"id\":5,\"question\":\"When I was young, we ___ play in the street for hours.（过去习惯）\",\"options\":[\"could\",\"would\",\"should\",\"must\"],\"answer\":1,\"explanation\":\"would表示过去的习惯性动作：we would play...（when I was young提示是过去习惯）\"}]"
+    }
+  ]
+}

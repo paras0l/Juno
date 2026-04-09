@@ -5,6 +5,10 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 android {
     namespace = "com.juno.app"
     compileSdk = 35
@@ -142,6 +146,9 @@ dependencies {
 
     // Coil (Image loading)
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // Markdown Renderer
+    implementation("com.mikepenz:multiplatform-markdown-renderer-m3:0.24.0")
 
     // ========== Phase 3 Dependencies ==========
 

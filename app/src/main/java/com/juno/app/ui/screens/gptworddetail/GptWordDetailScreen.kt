@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.juno.app.data.local.entity.WordEntity
-import com.juno.app.ui.utils.MarkdownUtils
+import com.mikepenz.markdown.m3.Markdown
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -156,12 +156,20 @@ private fun WordDetailContent(
         Spacer(modifier = Modifier.height(12.dp))
 
         if (!word.gptContent.isNullOrBlank()) {
-            val sections = MarkdownUtils.parseSections(word.gptContent!!)
-            
-            sections.forEach { (title, content) ->
-                SectionCard(title = title, content = content)
-                Spacer(modifier = Modifier.height(12.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Markdown(
+                        content = word.gptContent,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
+            Spacer(modifier = Modifier.height(12.dp))
         }
 
         if (!word.isLearned) {
@@ -175,37 +183,5 @@ private fun WordDetailContent(
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-    }
-}
-
-@Composable
-private fun SectionCard(
-    title: String,
-    content: String,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            val lines = content.split("\n")
-            lines.forEach { line ->
-                if (line.isNotBlank()) {
-                    Text(
-                        text = MarkdownUtils.parseLine(line.trim()),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(vertical = 2.dp)
-                    )
-                }
-            }
-        }
     }
 }

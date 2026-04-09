@@ -37,4 +37,11 @@ sealed class Screen(val route: String) {
     data object GptWordDetail : Screen("gpt_word_detail/{wordId}") {
         fun createRoute(wordId: Long) = "gpt_word_detail/$wordId"
     }
+
+    // 语法学习模块
+    data object Study : Screen("study")
+    data object Grammar : Screen("grammar")
+    data object GrammarLesson : Screen("grammar_lesson/{lessonId}") {
+        fun createRoute(lessonId: Long) = "grammar_lesson/$lessonId"
+    }
 }

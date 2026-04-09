@@ -14,6 +14,8 @@ import com.juno.app.ui.screens.camera.CameraScreen
 import com.juno.app.ui.screens.chat.ChatScreen
 import com.juno.app.ui.screens.flashcard.FlashcardScreen
 import com.juno.app.ui.screens.focus.FocusModeScreen
+import com.juno.app.ui.screens.grammar.GrammarLessonScreen
+import com.juno.app.ui.screens.grammar.GrammarScreen
 import com.juno.app.ui.screens.main.MainScreen
 import com.juno.app.ui.screens.permission.PermissionGuideScreen
 import com.juno.app.ui.screens.profile.ProfileScreen
@@ -70,7 +72,9 @@ fun JunoNavHost(
                 onNavigateToPronunciation = { word ->
                     word?.let { navController.navigate(Screen.Pronunciation.createRoute(it)) }
                 },
-                onNavigateToOcrHistory = { navController.navigate(Screen.OcrHistory.route) }
+                onNavigateToOcrHistory = { navController.navigate(Screen.OcrHistory.route) },
+                onNavigateToFlashcard = { navController.navigate(Screen.Flashcard.route) },
+                onNavigateToGrammar = { navController.navigate(Screen.Grammar.route) }
             )
         }
 
@@ -236,6 +240,32 @@ fun JunoNavHost(
             GptWordDetailScreen(
                 wordId = wordId,
                 onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        // ── 语法学习模块 ──────────────────────────────────────────────────────
+        composable(Screen.Grammar.route) {
+            GrammarScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToLesson = { lessonId ->
+                    navController.navigate(Screen.GrammarLesson.createRoute(lessonId))
+                }
+            )
+        }
+
+        composable(
+            route = Screen.GrammarLesson.route,
+            arguments = listOf(navArgument("lessonId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val lessonId = backStackEntry.arguments?.getLong("lessonId") ?: return@composable
+            GrammarLessonScreen(
+                lessonId = lessonId,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToNextLesson = { nextId ->
+                    navController.navigate(Screen.GrammarLesson.createRoute(nextId)) {
+                        popUpTo(Screen.GrammarLesson.route) { inclusive = true }
+                    }
+                }
             )
         }
     }
