@@ -136,41 +136,41 @@ fun AddWordScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
-                    value = uiState.meaning,
-                    onValueChange = { viewModel.onMeaningChange(it) },
-                    label = { Text("释义 *") },
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = uiState.meaningError != null,
-                    supportingText = uiState.meaningError?.let { { Text(it) } },
-                    minLines = 2,
-                    maxLines = 4,
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Sentences,
-                        imeAction = ImeAction.Next
-                    )
-                )
+                 OutlinedTextField(
+                     value = uiState.definitions,
+                     onValueChange = { viewModel.onDefinitionsChange(it) },
+                     label = { Text("释义 *") },
+                     modifier = Modifier.fillMaxWidth(),
+                     isError = uiState.definitionsError != null,
+                     supportingText = uiState.definitionsError?.let { { Text(it) } },
+                     minLines = 2,
+                     maxLines = 4,
+                     keyboardOptions = KeyboardOptions(
+                         capitalization = KeyboardCapitalization.Sentences,
+                         imeAction = ImeAction.Next
+                     )
+                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                 OutlinedTextField(
+                     value = uiState.sentence,
+                     onValueChange = { viewModel.onSentenceChange(it) },
+                     label = { Text("例句") },
+                     modifier = Modifier.fillMaxWidth(),
+                     minLines = 2,
+                     maxLines = 3,
+                     keyboardOptions = KeyboardOptions(
+                         capitalization = KeyboardCapitalization.Sentences,
+                         imeAction = ImeAction.Next
+                     )
+                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = uiState.example,
-                    onValueChange = { viewModel.onExampleChange(it) },
-                    label = { Text("例句") },
-                    modifier = Modifier.fillMaxWidth(),
-                    minLines = 2,
-                    maxLines = 3,
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Sentences,
-                        imeAction = ImeAction.Next
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                OutlinedTextField(
-                    value = uiState.translation,
-                    onValueChange = { viewModel.onTranslationChange(it) },
+                    value = uiState.definitions,
+                    onValueChange = { viewModel.onDefinitionsChange(it) },
                     label = { Text("翻译") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 2,

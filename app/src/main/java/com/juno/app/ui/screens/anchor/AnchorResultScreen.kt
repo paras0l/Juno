@@ -233,11 +233,11 @@ private fun AnchorContentCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = content.meaning,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+             Text(
+                 text = content.meaning,
+                 style = MaterialTheme.typography.bodyLarge,
+                 color = MaterialTheme.colorScheme.onSurface
+             )
 
             Spacer(modifier = Modifier.height(16.dp))
 

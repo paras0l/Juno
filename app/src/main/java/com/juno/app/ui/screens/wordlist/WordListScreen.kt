@@ -369,24 +369,24 @@ private fun WordListItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = word.meaning,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+             Text(
+                 text = word.definitions ?: "",
+                 style = MaterialTheme.typography.bodyMedium,
+                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                 maxLines = 2,
+                 overflow = TextOverflow.Ellipsis
+             )
 
-            if (!word.example.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "例句: ${word.example}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+             if (!word.sentence.isNullOrEmpty()) {
+                 Spacer(modifier = Modifier.height(4.dp))
+                 Text(
+                     text = "例句: ${word.sentence}",
+                     style = MaterialTheme.typography.bodySmall,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                     maxLines = 1,
+                     overflow = TextOverflow.Ellipsis
+                 )
+             }
         }
     }
 }

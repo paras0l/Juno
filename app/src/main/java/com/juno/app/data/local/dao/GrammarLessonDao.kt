@@ -31,6 +31,9 @@ interface GrammarLessonDao {
     @Update
     suspend fun updateLesson(lesson: GrammarLessonEntity)
 
+    @Query("UPDATE grammar_lessons SET title = :title, `order` = :order, content = :content, examples = :examples, exercises = :exercises WHERE id = :id")
+    suspend fun updateStaticData(id: Long, title: String, order: Int, content: String, examples: String, exercises: String)
+
     @Query("SELECT COUNT(*) FROM grammar_lessons")
     suspend fun getLessonCount(): Int
 }

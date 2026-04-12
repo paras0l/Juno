@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -94,6 +95,35 @@ fun GrammarLessonScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                    }
+                },
+                actions = {
+                    // Show skip button only when the lesson has been completed before
+                    if (uiState.lesson?.isCompleted == true && uiState.step == LessonStep.CONTENT) {
+                        androidx.compose.material3.TextButton(
+                            onClick = {
+                                val nextId = uiState.nextLessonId
+                                if (nextId != null) {
+                                    onNavigateToNextLesson(nextId)
+                                } else {
+                                    onNavigateBack()
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.SkipNext,
+                                contentDescription = "跳过",
+                                tint = Color(0xFF8B5CF6),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "跳过",
+                                color = Color(0xFF8B5CF6),
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -185,6 +215,65 @@ private fun ContentStep(
             Box(modifier = Modifier.padding(20.dp)) {
                 Markdown(
                     content = lesson.content,
+                    typography = com.mikepenz.markdown.m3.markdownTypography(
+                        h1 = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold, lineHeight = 32.sp),
+                        h2 = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, lineHeight = 28.sp),
+                        h3 = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        text = MaterialTheme.typography.bodyMedium.copy(lineHeight = 26.sp),
+                        paragraph = MaterialTheme.typography.bodyMedium.copy(lineHeight = 26.sp),
+                        list = MaterialTheme.typography.bodyMedium.copy(lineHeight = 26.sp),
+                        bullet = MaterialTheme.typography.bodyMedium.copy(lineHeight = 26.sp),
+                        ordered = MaterialTheme.typography.bodyMedium.copy(lineHeight = 26.sp),
+                        code = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF8B5CF6)
+                        )
+                    ),
+                    colors = com.mikepenz.markdown.m3.markdownColor(
+                        text = MaterialTheme.colorScheme.onSurface,
+                        codeBackground = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                    ),
+                    padding = com.mikepenz.markdown.model.markdownPadding(
+                        block = 12.dp,
+                        list = 4.dp,
+                        listItemBottom = 6.dp,
+                        indentList = 16.dp
+                    ),
+                    components = com.mikepenz.markdown.compose.components.markdownComponents(
+                        custom = { elementType, markdownComponentModel ->
+                            if (elementType.name == "TABLE") {
+                                val rows = markdownComponentModel.node.children.filter { it.type.name == "HEADER" || it.type.name == "ROW" }
+                                Column(modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(8.dp)).padding(8.dp)) {
+                                    for (row in rows) {
+                                        val cells = row.children.filter { it.type.name == "HEADER_CELL" || it.type.name == "CELL" }
+                                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                                            for (cell in cells) {
+                                                val contentText = markdownComponentModel.content.substring(cell.startOffset, cell.endOffset).trim()
+                                                val isHeader = row.type.name == "HEADER"
+                                                com.mikepenz.markdown.m3.Markdown(
+                                                    content = contentText,
+                                                    typography = com.mikepenz.markdown.m3.markdownTypography(
+                                                        text = if (isHeader) MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold) else MaterialTheme.typography.bodyMedium,
+                                                        paragraph = if (isHeader) MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold) else MaterialTheme.typography.bodyMedium,
+                                                        code = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Color(0xFF8B5CF6))
+                                                    ),
+                                                    colors = com.mikepenz.markdown.m3.markdownColor(
+                                                        text = MaterialTheme.colorScheme.onSurface,
+                                                        codeBackground = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                                                    ),
+                                                    padding = com.mikepenz.markdown.model.markdownPadding(block = 0.dp, list = 0.dp),
+                                                    modifier = Modifier.weight(1f).padding(4.dp)
+                                                )
+                                            }
+                                        }
+                                        if (row != rows.last()) {
+                                            androidx.compose.material3.HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
             }

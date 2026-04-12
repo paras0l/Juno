@@ -222,16 +222,16 @@ class WordListViewModel @Inject constructor(
                     }
                 }
 
-                // Data rows
-                words.forEachIndexed { index, word ->
-                    val row = sheet.createRow(index + 1)
-                    row.createCell(0).setCellValue(word.word)
-                    row.createCell(1).setCellValue(word.phonetic ?: "")
-                    row.createCell(2).setCellValue(word.meaning)
-                    row.createCell(3).setCellValue(word.example ?: "")
-                    row.createCell(4).setCellValue(word.difficulty.toDouble())
-                    row.createCell(5).setCellValue(if (word.isLearned) "已学" else "未学")
-                }
+                 // Data rows
+                 words.forEachIndexed { index, word ->
+                     val row = sheet.createRow(index + 1)
+                     row.createCell(0).setCellValue(word.word)
+                     row.createCell(1).setCellValue(word.phonetic ?: "")
+                     row.createCell(2).setCellValue(word.definitions ?: "")
+                     row.createCell(3).setCellValue(word.sentence ?: "")
+                     row.createCell(4).setCellValue(word.difficulty.toDouble())
+                     row.createCell(5).setCellValue(if (word.isLearned) "已学" else "未学")
+                 }
 
                 // Auto-size columns
                 headers.indices.forEach { sheet.setColumnWidth(it, 5000) }

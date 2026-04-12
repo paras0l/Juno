@@ -9,16 +9,16 @@ data class WordEntity(
     val id: Long = 0,
     val word: String,
     val phonetic: String? = null,
-    val meaning: String,
-    val example: String? = null,
-    val translation: String? = null,
-    val audioUrl: String? = null,
-    val imageUrl: String? = null,
-    val difficulty: Int = 1, // 1-5 scale
+    val definitions: String? = null,
+    val sentence: String? = null,
+    val sentenceTranslation: String? = null,
+    val etymology: String? = null,
+    val collocations: String? = null,
+    val gptContent: String? = null,
+    val difficulty: Int = 1,
     val isLearned: Boolean = false,
     val lastStudiedDate: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val category: String? = null,
-    val tags: String? = null,
-    val gptContent: String? = null
+    val tags: String? = null
 )

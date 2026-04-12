@@ -92,17 +92,17 @@ class ExcelImportService @Inject constructor(
                 val translationCell = row.getCell(4)
                 val translation = translationCell?.let { getCellValueAsString(it).trim() }?.takeIf { it.isNotBlank() }
 
-                val wordEntity = WordEntity(
-                    word = word,
-                    phonetic = phonetic,
-                    meaning = meaning,
-                    example = example,
-                    translation = translation,
-                    difficulty = 1,
-                    category = null,
-                    tags = null,
-                    isLearned = false
-                )
+            val wordEntity = WordEntity(
+                word = word,
+                phonetic = phonetic,
+                definitions = meaning,
+                sentence = example,
+                sentenceTranslation = translation,
+                difficulty = 1,
+                category = null,
+                tags = null,
+                isLearned = false
+            )
 
                 words.add(wordEntity)
             }

@@ -25,6 +25,9 @@ interface GrammarStageDao {
     @Update
     suspend fun updateStage(stage: GrammarStageEntity)
 
+    @Query("UPDATE grammar_stages SET name = :name, level = :level, `order` = :order, totalLessons = :totalLessons WHERE id = :id")
+    suspend fun updateStaticData(id: Long, name: String, level: String, order: Int, totalLessons: Int)
+
     @Query("SELECT COUNT(*) FROM grammar_stages")
     suspend fun getStageCount(): Int
 }

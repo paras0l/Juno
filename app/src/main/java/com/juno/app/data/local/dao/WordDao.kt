@@ -44,16 +44,16 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE category = :category")
     fun getWordsByCategory(category: String): Flow<List<WordEntity>>
 
-    @Query("SELECT * FROM words WHERE (word LIKE '%' || :query || '%' OR meaning LIKE '%' || :query || '%')")
+    @Query("SELECT * FROM words WHERE (word LIKE '%' || :query || '%' OR definitions LIKE '%' || :query || '%')")
     fun searchWords(query: String): Flow<List<WordEntity>>
 
-    @Query("SELECT * FROM words WHERE isLearned = 1 AND (word LIKE '%' || :query || '%' OR meaning LIKE '%' || :query || '%')")
+    @Query("SELECT * FROM words WHERE isLearned = 1 AND (word LIKE '%' || :query || '%' OR definitions LIKE '%' || :query || '%')")
     fun searchLearnedWords(query: String): Flow<List<WordEntity>>
 
     @Query("""
         SELECT w.* FROM words w
         INNER JOIN review_records r ON w.id = r.wordId
-        WHERE r.repetitions >= 3 AND (w.word LIKE '%' || :query || '%' OR w.meaning LIKE '%' || :query || '%')
+        WHERE r.repetitions >= 3 AND (w.word LIKE '%' || :query || '%' OR w.definitions LIKE '%' || :query || '%')
     """)
     fun searchMasteredWords(query: String): Flow<List<WordEntity>>
 

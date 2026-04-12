@@ -285,15 +285,15 @@ private fun PronunciationContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                if (!currentWord?.meaning.isNullOrEmpty()) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = currentWord?.meaning ?: "",
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                    )
-                }
+                 if (!currentWord?.definitions.isNullOrEmpty()) {
+                     Spacer(modifier = Modifier.height(12.dp))
+                     Text(
+                         text = currentWord?.definitions ?: "",
+                         fontSize = 14.sp,
+                         textAlign = TextAlign.Center,
+                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                     )
+                 }
             }
         }
 
@@ -745,15 +745,15 @@ private fun WordListContent(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
-                        if (!word.meaning.isNullOrEmpty()) {
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = word.meaning,
-                                fontSize = 13.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                maxLines = 1
-                            )
-                        }
+                         if (!word.definitions.isNullOrEmpty()) {
+                             Spacer(modifier = Modifier.height(4.dp))
+                             Text(
+                                 text = word.definitions,
+                                 fontSize = 13.sp,
+                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                 maxLines = 1
+                             )
+                         }
                     }
                     Surface(
                         shape = CircleShape,

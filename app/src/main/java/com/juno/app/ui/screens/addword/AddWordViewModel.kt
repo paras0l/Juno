@@ -16,19 +16,19 @@ import javax.inject.Inject
 data class AddWordUiState(
     val word: String = "",
     val phonetic: String = "",
-    val meaning: String = "",
-    val example: String = "",
-    val translation: String = "",
+    val definitions: String = "",
+    val sentence: String = "",
+    val sentenceTranslation: String = "",
     val isEditMode: Boolean = false,
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
     val wordError: String? = null,
-    val meaningError: String? = null,
+    val definitionsError: String? = null,
     val saveSuccess: Boolean = false,
     val error: String? = null
 ) {
     val isValid: Boolean
-        get() = word.isNotBlank() && meaning.isNotBlank()
+        get() = word.isNotBlank() && definitions.isNotBlank()
 }
 
 @HiltViewModel
@@ -60,9 +60,9 @@ class AddWordViewModel @Inject constructor(
                             isEditMode = true,
                             word = word.word,
                             phonetic = word.phonetic ?: "",
-                            meaning = word.meaning,
-                            example = word.example ?: "",
-                            translation = word.translation ?: ""
+                            definitions = word.definitions ?: "",
+                            sentence = word.sentence ?: "",
+                            sentenceTranslation = word.sentenceTranslation ?: ""
                         )
                     }
                 } else {
@@ -97,21 +97,21 @@ class AddWordViewModel @Inject constructor(
         _uiState.update { it.copy(phonetic = value) }
     }
 
-    fun onMeaningChange(value: String) {
+    fun onDefinitionsChange(value: String) {
         _uiState.update {
             it.copy(
-                meaning = value,
-                meaningError = if (value.isBlank()) "释义不能为空" else null
+                definitions = value,
+                definitionsError = if (value.isBlank()) "释义不能为空" else null
             )
         }
     }
 
-    fun onExampleChange(value: String) {
-        _uiState.update { it.copy(example = value) }
+    fun onSentenceChange(value: String) {
+        _uiState.update { it.copy(sentence = value) }
     }
 
-    fun onTranslationChange(value: String) {
-        _uiState.update { it.copy(translation = value) }
+    fun onSentenceTranslationChange(value: String) {
+        _uiState.update { it.copy(sentenceTranslation = value) }
     }
 
     fun saveWord() {
@@ -122,8 +122,8 @@ class AddWordViewModel @Inject constructor(
             _uiState.update { it.copy(wordError = "单词不能为空") }
             hasError = true
         }
-        if (currentState.meaning.isBlank()) {
-            _uiState.update { it.copy(meaningError = "释义不能为空") }
+        if (currentState.definitions.isBlank()) {
+            _uiState.update { it.copy(definitionsError = "释义不能为空") }
             hasError = true
         }
 
@@ -136,9 +136,9 @@ class AddWordViewModel @Inject constructor(
                     id = if (currentState.isEditMode) wordId else 0,
                     word = currentState.word.trim(),
                     phonetic = currentState.phonetic.trim().ifBlank { null },
-                    meaning = currentState.meaning.trim(),
-                    example = currentState.example.trim().ifBlank { null },
-                    translation = currentState.translation.trim().ifBlank { null }
+                    definitions = currentState.definitions.trim().ifBlank { null },
+                    sentence = currentState.sentence.trim().ifBlank { null },
+                    sentenceTranslation = currentState.sentenceTranslation.trim().ifBlank { null }
                 )
 
                 if (currentState.isEditMode) {

@@ -145,11 +145,11 @@ private fun WordDetailContent(
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = word.meaning,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                 Text(
+                     text = word.definitions ?: "暂无释义",
+                     style = MaterialTheme.typography.bodyLarge,
+                     color = MaterialTheme.colorScheme.onSurface
+                 )
             }
         }
 

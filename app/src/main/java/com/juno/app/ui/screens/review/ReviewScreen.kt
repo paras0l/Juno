@@ -144,17 +144,17 @@ private fun ReviewContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        ReviewFlipCard(
-            word = uiState.currentWord?.word ?: "",
-            phonetic = uiState.currentWord?.phonetic ?: "",
-            meaning = uiState.currentWord?.meaning ?: "",
-            example = uiState.currentWord?.example ?: "",
-            isFlipped = uiState.isFlipped,
-            onFlip = onFlipCard,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-        )
+         ReviewFlipCard(
+             word = uiState.currentWord?.word ?: "",
+             phonetic = uiState.currentWord?.phonetic ?: "",
+             definitions = uiState.currentWord?.definitions ?: "",
+             sentence = uiState.currentWord?.sentence ?: "",
+             isFlipped = uiState.isFlipped,
+             onFlip = onFlipCard,
+             modifier = Modifier
+                 .weight(1f)
+                 .fillMaxWidth()
+         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -181,8 +181,8 @@ private fun ReviewContent(
 private fun ReviewFlipCard(
     word: String,
     phonetic: String,
-    meaning: String,
-    example: String,
+    definitions: String,
+    sentence: String,
     isFlipped: Boolean,
     onFlip: () -> Unit,
     modifier: Modifier = Modifier
@@ -223,13 +223,13 @@ private fun ReviewFlipCard(
                     word = word,
                     phonetic = phonetic
                 )
-            } else {
-                ReviewBackCard(
-                    meaning = meaning,
-                    example = example,
-                    modifier = Modifier.graphicsLayer { rotationY = 180f }
-                )
-            }
+             } else {
+                 ReviewBackCard(
+                     definitions = definitions,
+                     sentence = sentence,
+                     modifier = Modifier.graphicsLayer { rotationY = 180f }
+                 )
+             }
         }
     }
 }
@@ -263,8 +263,8 @@ private fun ReviewFrontCard(
 
 @Composable
 private fun ReviewBackCard(
-    meaning: String,
-    example: String,
+    definitions: String,
+    sentence: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -273,13 +273,13 @@ private fun ReviewBackCard(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = meaning,
+            text = definitions ?: "暂无释义",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSecondaryContainer
         )
-        if (example.isNotEmpty()) {
+        if (!sentence.isNullOrEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "例句:",
@@ -288,7 +288,7 @@ private fun ReviewBackCard(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = example,
+                text = sentence,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)

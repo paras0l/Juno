@@ -6,9 +6,10 @@ import com.juno.app.domain.repository.WordRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,7 +18,7 @@ class GptWordsImportService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val wordRepository: WordRepository
 ) {
-
+    
     data class ImportResult(
         val success: Boolean,
         val totalCount: Int = 0,
@@ -25,43 +26,54 @@ class GptWordsImportService @Inject constructor(
         val duplicateCount: Int = 0,
         val errorMessage: String? = null
     )
-
+    
     suspend fun importWords(): ImportResult = withContext(Dispatchers.IO) {
         try {
             val inputStream = context.assets.open("gptwords.json")
-            val reader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
+            val reader = java.io.InputStreamReader(inputStream, "UTF-8")
+            val jsonArray = Gson().fromJson(reader, JsonArray::class.java)
             
             val words = mutableListOf<WordEntity>()
-            var line: String?
             
-            while (reader.readLine().also { line = it } != null) {
-                val trimmed = line!!.trim()
-                if (trimmed.isEmpty()) continue
+            for (jsonElement in jsonArray) {
+                 val jsonObject = jsonElement as JsonObject
+                 
+                 val word = jsonObject.get("word").getAsString()
+                 if (word.isBlank()) continue
+                 
+                 val phonetic = jsonObject.get("phonetic").getAsString()
+                 
+                 // Extract definitions from JSON array and format as string
+                 val definitions = jsonObject.getAsJsonArray("definitions")
+                     .map { 
+                         val obj = it.asJsonObject
+                         "${obj.get("pos").getAsString()}: ${obj.get("mean").getAsString()}"
+                     }
+                     .joinToString("; ")
+                 
+                 val sentence = jsonObject.get("sentence").getAsString()
+                 val sentenceTranslation = jsonObject.get("sentence_translation").getAsString()
+                 val etymology = jsonObject.get("etymology").getAsString()
+                 
+                 // Extract collocations from JSON array and format as string
+                 val collocations = jsonObject.getAsJsonArray("collocations")
+                     .map { it.getAsString() }
+                     .joinToString(", ")
                 
-                try {
-                    val json = JSONObject(trimmed)
-                    val word = json.getString("word")
-                    val content = json.getString("content")
-                    
-                    if (word.isBlank()) continue
-                    
-                    val meaning = extractMeaning(content)
-                    
-                    words.add(
-                        WordEntity(
-                            word = word,
-                            meaning = meaning,
-                            gptContent = content,
-                            difficulty = 1,
-                            isLearned = false
-                        )
+                words.add(
+                    WordEntity(
+                        word = word,
+                        phonetic = phonetic,
+                        definitions = definitions,
+                        sentence = sentence,
+                        sentenceTranslation = sentenceTranslation,
+                        etymology = etymology,
+                        collocations = collocations,
+                        difficulty = 1,
+                        isLearned = false
                     )
-                } catch (e: Exception) {
-                    // Skip unparseable lines
-                }
+                )
             }
-            reader.close()
-            inputStream.close()
             
             if (words.isEmpty()) {
                 return@withContext ImportResult(
@@ -91,19 +103,5 @@ class GptWordsImportService @Inject constructor(
                 errorMessage = "导入失败: ${e.message}"
             )
         }
-    }
-
-    private fun extractMeaning(content: String): String {
-        val lines = content.split("\n")
-        for (line in lines) {
-            val trimmed = line.trim()
-            if (trimmed.isEmpty()) continue
-            if (trimmed.startsWith("#")) continue
-            if (trimmed.length > 200) {
-                return trimmed.take(200) + "..."
-            }
-            return trimmed
-        }
-        return "暂无释义"
     }
 }

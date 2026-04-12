@@ -392,11 +392,11 @@ private fun SwipeableFlashcardContent(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(modifier = Modifier.height(24.dp))
-                            Text(
-                                text = currentWord.meaning,
-                                style = MaterialTheme.typography.headlineSmall,
-                                textAlign = TextAlign.Center
-                            )
+                             Text(
+                                 text = currentWord.definitions ?: "暂无释义",
+                                 style = MaterialTheme.typography.headlineSmall,
+                                 textAlign = TextAlign.Center
+                             )
                             Spacer(modifier = Modifier.height(32.dp))
                             
                             OutlinedTextField(
@@ -508,27 +508,27 @@ private fun SwipeableFlashcardContent(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = currentWord.meaning,
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Medium
-                            )
+                             Text(
+                                 text = currentWord.definitions ?: "暂无释义",
+                                 style = MaterialTheme.typography.titleLarge,
+                                 fontWeight = FontWeight.Medium
+                             )
                             
-                            if (!currentWord.example.isNullOrEmpty()) {
-                                Spacer(modifier = Modifier.height(24.dp))
-                                Text(
-                                    text = "例句",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = currentWord.example,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
-                                )
-                            }
+                             if (!currentWord.sentence.isNullOrEmpty()) {
+                                 Spacer(modifier = Modifier.height(24.dp))
+                                 Text(
+                                     text = "例句",
+                                     style = MaterialTheme.typography.labelMedium,
+                                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                                 )
+                                 Spacer(modifier = Modifier.height(8.dp))
+                                 Text(
+                                     text = currentWord.sentence,
+                                     style = MaterialTheme.typography.bodyLarge,
+                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                     lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
+                                 )
+                             }
                             
                             Spacer(modifier = Modifier.weight(1f))
                             

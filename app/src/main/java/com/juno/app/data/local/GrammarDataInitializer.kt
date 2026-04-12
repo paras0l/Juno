@@ -18,9 +18,14 @@ class GrammarDataInitializer @Inject constructor(
     private val grammarLessonDao: GrammarLessonDao
 ) {
     suspend fun initializeIfNeeded() = withContext(Dispatchers.IO) {
-        val stageCount = grammarStageDao.getStageCount()
-        if (stageCount == 0) {
+        val prefs = context.getSharedPreferences("juno_prefs", Context.MODE_PRIVATE)
+        val currentVersion = prefs.getInt("grammar_data_version", 0)
+        // Increment this target version whenever grammar_data.json is updated
+        val TARGET_VERSION = 1
+
+        if (currentVersion < TARGET_VERSION) {
             loadFromAssets()
+            prefs.edit().putInt("grammar_data_version", TARGET_VERSION).apply()
         }
     }
 
@@ -32,47 +37,67 @@ class GrammarDataInitializer @Inject constructor(
 
             val root = JSONObject(json)
 
-            // Parse and insert stages
+            // Parse and sync stages
             val stagesArray = root.getJSONArray("stages")
-            val stages = mutableListOf<GrammarStageEntity>()
             for (i in 0 until stagesArray.length()) {
                 val obj = stagesArray.getJSONObject(i)
-                stages.add(
-                    GrammarStageEntity(
-                        id = obj.getLong("id"),
-                        name = obj.getString("name"),
-                        level = obj.getString("level"),
-                        order = obj.getInt("order"),
-                        totalLessons = obj.getInt("totalLessons"),
-                        completedLessons = 0,
-                        isUnlocked = obj.getBoolean("isUnlocked"),
-                        completedAt = null
+                val id = obj.getLong("id")
+                val name = obj.getString("name")
+                val level = obj.getString("level")
+                val order = obj.getInt("order")
+                val totalLessons = obj.getInt("totalLessons")
+                
+                val existing = grammarStageDao.getStageById(id)
+                if (existing == null) {
+                    grammarStageDao.insertStage(
+                        GrammarStageEntity(
+                            id = id,
+                            name = name,
+                            level = level,
+                            order = order,
+                            totalLessons = totalLessons,
+                            completedLessons = 0,
+                            isUnlocked = obj.getBoolean("isUnlocked"),
+                            completedAt = null
+                        )
                     )
-                )
+                } else {
+                    grammarStageDao.updateStaticData(id, name, level, order, totalLessons)
+                }
             }
-            grammarStageDao.insertStages(stages)
 
-            // Parse and insert lessons
+            // Parse and sync lessons
             val lessonsArray = root.getJSONArray("lessons")
-            val lessons = mutableListOf<GrammarLessonEntity>()
             for (i in 0 until lessonsArray.length()) {
                 val obj = lessonsArray.getJSONObject(i)
-                lessons.add(
-                    GrammarLessonEntity(
-                        id = obj.getLong("id"),
-                        stageId = obj.getLong("stageId"),
-                        title = obj.getString("title"),
-                        order = obj.getInt("order"),
-                        content = obj.getString("content"),
-                        examples = obj.getString("examples"),
-                        exercises = obj.getString("exercises"),
-                        isCompleted = false,
-                        correctRate = 0f,
-                        lastPracticedAt = null
+                val id = obj.getLong("id")
+                val stageId = obj.getLong("stageId")
+                val title = obj.getString("title")
+                val order = obj.getInt("order")
+                val content = obj.getString("content")
+                val examples = obj.getString("examples")
+                val exercises = obj.getString("exercises")
+
+                val existing = grammarLessonDao.getLessonById(id)
+                if (existing == null) {
+                    grammarLessonDao.insertLesson(
+                        GrammarLessonEntity(
+                            id = id,
+                            stageId = stageId,
+                            title = title,
+                            order = order,
+                            content = content,
+                            examples = examples,
+                            exercises = exercises,
+                            isCompleted = false,
+                            correctRate = 0f,
+                            lastPracticedAt = null
+                        )
                     )
-                )
+                } else {
+                    grammarLessonDao.updateStaticData(id, title, order, content, examples, exercises)
+                }
             }
-            grammarLessonDao.insertLessons(lessons)
         } catch (e: Exception) {
             e.printStackTrace()
         }
